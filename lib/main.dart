@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:foodz_owner/Provider/app_provider.dart';
 import 'package:foodz_owner/Screens/IntroScreen.dart';
 import 'package:foodz_owner/Screens/LoginScreen.dart';
+import 'package:foodz_owner/Screens/MainScreen.dart';
 import 'package:foodz_owner/Screens/RegisterScreen.dart';
 import 'package:foodz_owner/Screens/WalkthroughScreen.dart';
 import 'package:foodz_owner/Screens/WelcomeScreen.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
             RegisterScreen.tag: (context) => RegisterScreen(),
             LoginScreen.tag: (context) => LoginScreen(),
             IntroScreen.tag: (context) => IntroScreen(),
+            MainScreen.tag: (context) => MainScreen(),
           },
         );
       },

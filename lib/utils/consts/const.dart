@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/utils/welcomeScreen/FoodColors.dart';
 
 class Constants {
   static String appName = "Foodz";
@@ -7,7 +8,7 @@ class Constants {
 //  Color(0xfffcfcff);
   static Color lightPrimary = Color(0xfffcfcff);
   static Color darkPrimary = Colors.black;
-  static Color lightAccent = Colors.red;
+  static Color lightAccent = /*Colors.red*/ k_appColor;
   static Color darkAccent = Colors.red[400];
   static Color lightBG = Color(0xfffcfcff);
   static Color darkBG = Colors.black;
