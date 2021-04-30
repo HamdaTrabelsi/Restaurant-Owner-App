@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:foodz_owner/Screens/MainScreen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:map_pin_picker/map_pin_picker.dart';
 
 class IntroScreen extends StatefulWidget {
   static String tag = '/IntroScreen';
@@ -91,16 +92,13 @@ class _IntroScreenState extends State<IntroScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
               imageProfile(),
               SizedBox(
                 height: 5,
               ),
               Padding(
                 padding:
-                    EdgeInsets.only(left: 16, right: 16, top: 32, bottom: 8),
+                    EdgeInsets.only(left: 16, right: 16, top: 15, bottom: 8),
                 child: TextField(
                   style: TextStyle(fontSize: 18),
                   keyboardType: TextInputType.text,
@@ -207,7 +205,7 @@ class _IntroScreenState extends State<IntroScreen> {
                 ? AssetImage("images/offline/empty.png")
                 : FileImage(File(_image.path)),*/
             decoration: BoxDecoration(
-                color: Colors.green,
+                color: Colors.green[100],
                 image: DecorationImage(
                   image: _image == null
                       ? AssetImage("images/offline/empty.png")
