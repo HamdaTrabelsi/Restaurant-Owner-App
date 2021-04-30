@@ -1,12 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:foodz_owner/Provider/app_provider.dart';
+import 'package:foodz_owner/Screens/EditPlateScreen.dart';
 import 'package:foodz_owner/Screens/IntroScreen.dart';
 import 'package:foodz_owner/Screens/LoginScreen.dart';
 import 'package:foodz_owner/Screens/MainScreen.dart';
 import 'package:foodz_owner/Screens/RegisterScreen.dart';
 import 'package:foodz_owner/Screens/WalkthroughScreen.dart';
 import 'package:foodz_owner/Screens/WelcomeScreen.dart';
+import 'package:foodz_owner/Screens/PlateDetailsScreen.dart';
+import 'package:foodz_owner/Screens/AddPlateScreen.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +48,9 @@ class MyApp extends StatelessWidget {
             LoginScreen.tag: (context) => LoginScreen(),
             IntroScreen.tag: (context) => IntroScreen(),
             MainScreen.tag: (context) => MainScreen(),
+            FoodDetailsScreen.tag: (context) => FoodDetailsScreen(),
+            AddPlateScreen.tag: (context) => AddPlateScreen(),
+            EditPlateScreen.tag: (context) => EditPlateScreen(),
           },
         );
       },

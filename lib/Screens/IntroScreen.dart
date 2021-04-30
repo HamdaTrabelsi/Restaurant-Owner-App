@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:foodz_owner/Screens/MainScreen.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:map_pin_picker/map_pin_picker.dart';
 
 class IntroScreen extends StatefulWidget {
   static String tag = '/IntroScreen';

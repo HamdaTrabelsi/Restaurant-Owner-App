@@ -43,9 +43,6 @@ dependencies:
   flutter_statusbarcolor: 0.2.3
   image_picker: ^0.7.4
   smooth_star_rating: 1.1.1
-  map_pin_picker: ^0.0.1
-  geocoder: ^0.2.1
-  google_maps_flutter: ^2.0.3
 
 
 dev_dependencies:
