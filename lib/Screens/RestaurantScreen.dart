@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodz_owner/Widgets/SmoothStarRating.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
+import 'package:foodz_owner/utils/welcomeScreen/FoodColors.dart';
 
 class RestaurantScreen extends StatefulWidget {
   static String tag = '/RestaurantScreen';
@@ -167,7 +168,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                       ExpansionTile(
                         leading: Icon(
                           Icons.location_pin,
-                          color: Colors.green,
+                          color: /*Colors.green*/ k_appColor,
                         ),
                         title: Text(
                           "Address",
@@ -184,7 +185,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                               child: Icon(
                                 Icons.create,
                                 size: 18.0,
-                                color: Colors.green,
+                                color: /*Colors.green*/ k_appColor,
                               ),
                               onTap: () {},
                             ),
@@ -194,7 +195,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                       ExpansionTile(
                         leading: Icon(
                           Icons.phone,
-                          color: Colors.green,
+                          color: /*Colors.green*/ k_appColor,
                         ),
                         title: Text(
                           "Phone Number",
@@ -213,7 +214,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                               child: Icon(
                                 Icons.create,
                                 size: 18.0,
-                                color: Colors.green,
+                                color: /*Colors.green*/ k_appColor,
                               ),
                               onTap: () {},
                             ),
@@ -223,7 +224,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                       ExpansionTile(
                         leading: Icon(
                           Icons.local_restaurant,
-                          color: Colors.green,
+                          color: /*Colors.green*/ k_appColor,
                         ),
                         title: Text(
                           "Cuisine",
