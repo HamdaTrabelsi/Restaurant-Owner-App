@@ -10,6 +10,7 @@ import 'package:foodz_owner/utils/consts/colors.dart';
 import 'package:foodz_owner/utils/strings.dart';
 import 'package:foodz_owner/utils/welcomeScreen/FoodColors.dart';
 import 'package:foodz_owner/utils/widgets.dart';
+import 'package:foodz_owner/Database/Authentication.dart';
 
 class RegisterScreen extends StatefulWidget {
   static String tag = '/RegisterScreen';
@@ -23,6 +24,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   String email;
   String password;
   String repeatPassword;
+  Authentication authentication = Authentication();
 
   bool passwordVisible = false;
   bool isRemember = false;
@@ -114,16 +116,23 @@ class RegisterScreenState extends State<RegisterScreen> {
                       if (email != null &&
                           password != null &&
                           password == repeatPassword) {
-                        try {
-                          final newUser =
-                              await _auth.createUserWithEmailAndPassword(
-                                  email: email, password: password);
-                          if (newUser != null) {
-                            Navigator.pushNamed(context, IntroScreen.tag);
-                          }
-                        } catch (e) {
-                          print(e);
-                        }
+                        await authentication.classicSignUp(
+                            context: context, email: email, password: password);
+                        // try {
+                        //   final newUser =
+                        //       await _auth.createUserWithEmailAndPassword(
+                        //           email: email, password: password);
+                        //   if (newUser != null) {
+                        //     await authentication.storeUserData(
+                        //         id: _auth.currentUser.uid,
+                        //         name: "",
+                        //         mail: _auth.currentUser.email);
+                        //
+                        //     Navigator.pushNamed(context, IntroScreen.tag);
+                        //   }
+                        // } catch (e) {
+                        //   print(e);
+                        // }
                       }
                     }),
               ),

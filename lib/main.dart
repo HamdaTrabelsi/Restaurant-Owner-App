@@ -10,6 +10,7 @@ import 'package:foodz_owner/Screens/WalkthroughScreen.dart';
 import 'package:foodz_owner/Screens/WelcomeScreen.dart';
 import 'package:foodz_owner/Screens/PlateDetailsScreen.dart';
 import 'package:foodz_owner/Screens/AddPlateScreen.dart';
+import 'package:foodz_owner/Screens/TestMap.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
 import 'package:provider/provider.dart';
 
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
             FoodDetailsScreen.tag: (context) => FoodDetailsScreen(),
             AddPlateScreen.tag: (context) => AddPlateScreen(),
             EditPlateScreen.tag: (context) => EditPlateScreen(),
+            TestScreen.tag: (context) => TestScreen(),
           },
         );
       },

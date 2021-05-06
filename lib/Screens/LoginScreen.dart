@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:foodz_owner/Screens/IntroScreen.dart';
+import 'package:foodz_owner/Screens/ProfileScreen.dart';
 import 'package:foodz_owner/Screens/RegisterScreen.dart';
 import 'package:foodz_owner/utils/consts/T3Constant.dart';
 import 'package:foodz_owner/utils/consts/T3Images.dart';
@@ -121,15 +122,17 @@ class LoginScreenState extends State<LoginScreen> {
                 child: AppButton(
                     textContent: t3_lbl_sign_in,
                     onPressed: () async {
-                      try {
-                        final user = await _auth.signInWithEmailAndPassword(
-                            email: email, password: password);
-                        if (user != null) {
-                          Navigator.pushNamed(context, IntroScreen.tag);
-                        }
-                      } catch (e) {
-                        print(e);
-                      }
+                      await authentication.classicSignIn(
+                          context: context, email: email, password: password);
+                      // try {
+                      //   final user = await _auth.signInWithEmailAndPassword(
+                      //       email: email, password: password);
+                      //   if (user != null) {
+                      //     Navigator.pushNamed(context, IntroScreen.tag);
+                      //   }
+                      // } catch (e) {
+                      //   print(e);
+                      // }
                     }),
               ),
               SizedBox(
@@ -154,7 +157,7 @@ class LoginScreenState extends State<LoginScreen> {
                               color: t3_colorPrimary,
                             )),
                         onTap: () {
-                          Navigator.pushNamed(context, IntroScreen.tag);
+                          Navigator.pushNamed(context, RegisterScreen.tag);
                         }),
                   )
                 ],

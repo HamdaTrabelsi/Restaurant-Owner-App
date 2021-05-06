@@ -142,6 +142,7 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                         ),
                         onPressed: () {
                           Navigator.pushNamed(context, WelcomeScreen.tag);
+                          Navigator.pop(context);
                         },
                       ),
                     ),

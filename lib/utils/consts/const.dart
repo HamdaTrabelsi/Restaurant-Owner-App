@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/utils/consts/AppConstant.dart';
 import 'package:foodz_owner/utils/welcomeScreen/FoodColors.dart';
 
 class Constants {
@@ -23,6 +24,7 @@ class Constants {
     appBarTheme: AppBarTheme(
       textTheme: TextTheme(
         title: TextStyle(
+          fontFamily: MainFont,
           color: darkBG,
           fontSize: 18.0,
           fontWeight: FontWeight.w800,
@@ -45,6 +47,7 @@ class Constants {
       textTheme: TextTheme(
         title: TextStyle(
           color: lightBG,
+          fontFamily: MainFont,
           fontSize: 18.0,
           fontWeight: FontWeight.w800,
         ),

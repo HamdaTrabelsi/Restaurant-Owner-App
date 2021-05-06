@@ -5,11 +5,13 @@ import 'package:foodz_owner/Provider/app_provider.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:foodz_owner/Database/Authentication.dart';
 
 final _firestore = FirebaseFirestore.instance;
 User loggedInUser;
 final googleSignIn = GoogleSignIn();
 final _auth = FirebaseAuth.instance;
+Authentication authentication = Authentication();
 
 class ProfileScreen extends StatefulWidget {
   static String tag = '/ProfileScreen';
@@ -50,6 +52,7 @@ class _ProfileScreen extends State<ProfileScreen> {
                   padding: EdgeInsets.only(left: 10.0, right: 10.0),
                   child: Image.asset(
                     "images/offline/cm4.jpeg",
+                    //loggedInUser.photoURL,
                     fit: BoxFit.cover,
                     width: 100.0,
                     height: 100.0,
@@ -90,10 +93,7 @@ class _ProfileScreen extends State<ProfileScreen> {
                         children: <Widget>[
                           InkWell(
                             onTap: () async {
-                              if (googleSignIn.currentUser != null) {
-                                await googleSignIn.disconnect();
-                              }
-                              _auth.signOut();
+                              await authentication.signOut(context: context);
                               // Navigator.pushNamed(context, WelcomeScreen.tag);
                             },
                             child: Text(
@@ -135,8 +135,8 @@ class _ProfileScreen extends State<ProfileScreen> {
                 ),
               ),
               subtitle: Text(
-                //"Jane Mary Doe",
-                loggedInUser.displayName,
+                "Jane Mary Doe",
+                //loggedInUser.displayName,
               ),
               trailing: IconButton(
                 icon: Icon(

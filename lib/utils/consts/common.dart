@@ -1,4 +1,5 @@
 import 'package:flutter/painting.dart';
+import 'package:foodz_owner/utils/consts/AppConstant.dart';
 
 class Cols {
   static const black = Color(0xff060518);
@@ -10,16 +11,16 @@ class Cols {
 }
 
 class Fonts {
-  static const String AirbnbCereal = 'AirbnbCereal';
+  static const String AirbnbCereal = /*'AirbnbCereal'*/ MainFont;
 }
 
 class TextStyles {
   static const airbnbCerealMedium = TextStyle(
       color: Cols.white,
       fontWeight: FontWeight.w500,
-      fontFamily: Fonts.AirbnbCereal);
+      fontFamily: /*Fonts.AirbnbCereal*/ MainFont);
   static const airbnbCerealBook = TextStyle(
       color: Cols.white,
       fontWeight: FontWeight.w400,
-      fontFamily: Fonts.AirbnbCereal);
+      fontFamily: /*Fonts.AirbnbCereal*/ MainFont);
 }

@@ -1,5 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sesame.foodz_owner">
+
+    <uses-permission  android:name="android.permission.ACCESS_FINE_LOCATION"  />
+
+    <uses-permission  android:name="android.permission.ACCESS_COARSE_LOCATION"  />
+
+    <uses-permission  android:name="android.permission.INTERNET"  />
+
    <application
         android:label="foodz_owner"
         android:icon="@mipmap/ic_launcher">

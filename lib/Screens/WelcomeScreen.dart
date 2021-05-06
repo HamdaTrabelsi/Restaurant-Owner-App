@@ -13,6 +13,7 @@ import 'package:foodz_owner/utils/welcomeScreen/FoodImages.dart';
 import 'package:foodz_owner/utils/welcomeScreen/FoodString.dart';
 import 'package:foodz_owner/utils/welcomeScreen/FoodWidget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:foodz_owner/Database/Authentication.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static String tag = '/WelcomeScreen';
@@ -26,6 +27,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
   //FacebookLogin _facebookLogin = FacebookLogin();
   final _auth = FirebaseAuth.instance;
   User _user;
+  Authentication authentication = Authentication();
 
   //final fbLogin = FacebookLogin();
 
@@ -119,22 +121,29 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                         food_color_red,
                         food_textColorPrimary,
                         fn: () async {
-                          final user = await googleSignIn.signIn();
-                          if (user == null) {
-                            return;
-                          } else {
-                            final googleAuth = await user.authentication;
-
-                            final credential = GoogleAuthProvider.credential(
-                              accessToken: googleAuth.accessToken,
-                              idToken: googleAuth.idToken,
-                            );
-
-                            await FirebaseAuth.instance
-                                .signInWithCredential(credential);
-
-                            Navigator.pushNamed(context, IntroScreen.tag);
-                          }
+                          authentication.SignInWithGoogle(context: context);
+                          // final user = await googleSignIn.signIn();
+                          // if (user == null) {
+                          //   return;
+                          // } else {
+                          //   final googleAuth = await user.authentication;
+                          //
+                          //   final credential = GoogleAuthProvider.credential(
+                          //     accessToken: googleAuth.accessToken,
+                          //     idToken: googleAuth.idToken,
+                          //   );
+                          //
+                          //   UserCredential cred = await FirebaseAuth.instance
+                          //       .signInWithCredential(credential);
+                          //
+                          //   if (cred.additionalUserInfo.isNewUser) {
+                          //     await authentication.storeUserData(
+                          //         id: cred.user.uid,
+                          //         name: cred.user.displayName,
+                          //         mail: cred.user.email);
+                          //   }
+                          //   Navigator.pushNamed(context, IntroScreen.tag);
+                          // }
                         },
                       ),
                       /*mOption(food_colorPrimary, food_ic_fb, food_lbl_facebook,

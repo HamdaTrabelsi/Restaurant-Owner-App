@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/Widgets/ActivityWidget.dart';
 import 'package:foodz_owner/Widgets/ReserveItem.dart';
 import 'package:foodz_owner/Widgets/DismissibleWidget.dart';
 import 'package:foodz_owner/utils/SnackUtil.dart';
@@ -49,6 +50,39 @@ List reservations = [
   },
 ];
 
+List destinations = [
+  {
+    "imageUrl": 'images/offline/cm1.jpeg',
+    "city": 'Venice',
+    "country": 'Italy',
+    "description": 'Visit Venice for an amazing and unforgettable adventure.',
+    //activities: activities,
+  },
+  {
+    "imageUrl": 'images/offline/cm2.jpeg',
+    "city": 'Paris',
+    "country": 'France',
+    "description": 'Visit Paris for an amazing and unforgettable adventure.',
+    //activities: activities,
+  },
+  {
+    "imageUrl": 'images/offline/cm3.jpeg',
+    "city": 'New Delhi',
+    "country": 'India',
+    "description":
+        'Visit New Delhi for an amazing and unforgettable adventure.',
+    //activities: activities,
+  },
+  {
+    "imageUrl": 'images/offline/cm4.jpeg',
+    "city": 'Sao Paulo',
+    "country": 'Brazil',
+    "description":
+        'Visit Sao Paulo for an amazing and unforgettable adventure.',
+    //activities: activities,
+  },
+];
+
 class ReservationsPending extends StatefulWidget {
   static String tag = '/ReservationsPending';
 
@@ -62,8 +96,8 @@ class _ReservationsPending extends State<ReservationsPending> {
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.fromLTRB(10.0, 10, 10.0, 0),
-        child: ListView.separated(
-          separatorBuilder: (context, index) => Divider(),
+        child: ListView.builder(
+          //separatorBuilder: (context, index) => Divider(),
           itemCount: reservations == null ? 0 : reservations.length,
           itemBuilder: (BuildContext context, int index) {
 //                Food food = Food.fromJson(foods[index]);
@@ -75,13 +109,21 @@ class _ReservationsPending extends State<ReservationsPending> {
               ondismissed: (direction) {
                 dismissItem(context, index, direction);
               },
-              child: ReserveItem(
-                img: rest['img'],
-                time: rest['time'],
-                name: rest['name'],
-                date: rest['date'],
-                seats: rest['seats'],
+              child: ActivityWidget(
+                type: rest["name"],
+                rating: 5,
+                name: rest["name"],
+                price: 4,
+                times: ["9:00 am", rest["date"]],
+                imageUrl: rest["img"],
               ),
+              // ReserveItem(
+              //   img: rest['img'],
+              //   time: rest['time'],
+              //   name: rest['name'],
+              //   date: rest['date'],
+              //   seats: rest['seats'],
+              // ),
             );
           },
         ),

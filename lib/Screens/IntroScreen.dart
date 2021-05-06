@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:foodz_owner/Screens/MainScreen.dart';
+import 'package:foodz_owner/Screens/TestMap.dart';
 import 'package:image_picker/image_picker.dart';
 
 class IntroScreen extends StatefulWidget {
   static String tag = '/IntroScreen';
-
   @override
   _IntroScreenState createState() => _IntroScreenState();
 }

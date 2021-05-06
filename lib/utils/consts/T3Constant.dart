@@ -1,5 +1,7 @@
 /*fonts*/
-const fontRegular = 'Regular';
+import 'package:foodz_owner/utils/consts/AppConstant.dart';
+
+const fontRegular = /*'Regular'*/ MainFont;
 const fontMedium = 'Medium';
 const fontSemibold = 'Semibold';
 const fontBold = 'Bold';
