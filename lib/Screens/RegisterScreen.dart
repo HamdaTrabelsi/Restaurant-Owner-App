@@ -22,6 +22,7 @@ class RegisterScreen extends StatefulWidget {
 class RegisterScreenState extends State<RegisterScreen> {
   final _auth = FirebaseAuth.instance;
   String email;
+  String username;
   String password;
   String repeatPassword;
   Authentication authentication = Authentication();
@@ -89,9 +90,15 @@ class RegisterScreenState extends State<RegisterScreen> {
                     height: 70,
                     width: 70,
                   )),
-              editTextStyle(t3_hint_Email, isPassword: false,
-                  onchange: (value) {
+              editTextStyle(t3_hint_Email,
+                  isPassword: false,
+                  type: TextInputType.emailAddress, onchange: (value) {
                 email = value;
+                //print(email);
+              }),
+              SizedBox(height: 16),
+              editTextStyle("Full Name", isPassword: false, onchange: (value) {
+                username = value;
                 //print(email);
               }),
               SizedBox(height: 16),
@@ -113,11 +120,15 @@ class RegisterScreenState extends State<RegisterScreen> {
                     textContent: t3_lbl_sign_up,
                     onPressed: () async {
                       //print(email + " " + password + " " + repeatPassword);
-                      if (email != null &&
+                      if (email.trim() != null &&
                           password != null &&
-                          password == repeatPassword) {
+                          password == repeatPassword &&
+                          username.trim() != null) {
                         await authentication.classicSignUp(
-                            context: context, email: email, password: password);
+                            context: context,
+                            email: email.trim(),
+                            password: password,
+                            username: username.trim());
                         // try {
                         //   final newUser =
                         //       await _auth.createUserWithEmailAndPassword(
@@ -154,45 +165,46 @@ class RegisterScreenState extends State<RegisterScreen> {
                               color: /*t3_colorPrimary*/ k_appColor,
                             )),
                         onTap: () {
+                          Navigator.pop(context);
                           Navigator.pushNamed(context, LoginScreen.tag);
                         }),
                   )
                 ],
               ),
-              Container(
-                alignment: Alignment.bottomLeft,
-                margin:
-                    EdgeInsets.only(top: 50, left: 16, right: 16, bottom: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Image.asset(
-                      t3_ic_sign2,
-                      height: 50,
-                      width: 70,
-                    ),
-                    Container(
-                        margin: EdgeInsets.only(top: 25, left: 10),
-                        child: Image.asset(
-                          t3_ic_sign4,
-                          height: 50,
-                          width: 70,
-                        )),
-                    Container(
-                        margin: EdgeInsets.only(top: 25, left: 10),
-                        child: Image.asset(
-                          t3_ic_sign3,
-                          height: 50,
-                          width: 70,
-                        )),
-                    Image.asset(
-                      t3_ic_sign1,
-                      height: 80,
-                      width: 80,
-                    ),
-                  ],
-                ),
-              )
+              // Container(
+              //   alignment: Alignment.bottomLeft,
+              //   margin:
+              //       EdgeInsets.only(top: 50, left: 16, right: 16, bottom: 20),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: <Widget>[
+              //       Image.asset(
+              //         t3_ic_sign2,
+              //         height: 50,
+              //         width: 70,
+              //       ),
+              //       Container(
+              //           margin: EdgeInsets.only(top: 25, left: 10),
+              //           child: Image.asset(
+              //             t3_ic_sign4,
+              //             height: 50,
+              //             width: 70,
+              //           )),
+              //       Container(
+              //           margin: EdgeInsets.only(top: 25, left: 10),
+              //           child: Image.asset(
+              //             t3_ic_sign3,
+              //             height: 50,
+              //             width: 70,
+              //           )),
+              //       Image.asset(
+              //         t3_ic_sign1,
+              //         height: 80,
+              //         width: 80,
+              //       ),
+              //     ],
+              //   ),
+              // )
             ],
           ),
         ),

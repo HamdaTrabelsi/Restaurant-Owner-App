@@ -49,7 +49,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => Future.value(false),
+      onWillPop: () => Future.value(true),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,

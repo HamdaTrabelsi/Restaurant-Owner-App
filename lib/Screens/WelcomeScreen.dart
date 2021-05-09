@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foodz_owner/Screens/IntroScreen.dart';
+import 'package:foodz_owner/Screens/LoginScreen.dart';
 import 'package:foodz_owner/Screens/RegisterScreen.dart';
 import 'package:foodz_owner/utils/consts/colors.dart';
 import 'package:foodz_owner/utils/welcomeScreen/FoodColors.dart';
@@ -83,26 +84,26 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                       width: MediaQuery.of(context).size.width,
                       color: k_appColor /*kPrimaryColor*/),
                 ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    transform: Matrix4.translationValues(0.0, -20.0, 0.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: food_white),
-                    width: width * 0.13,
-                    height: width * 0.13,
-                    //child:
-
-                    //Icon(Icons.arrow_forward, color: food_textColorPrimary),
-                    /*IconButton(
-                            icon: Icon(Icons.arrow_forward),
-                            /*onPressed: () {
-                              //Navigator.pushNamed(context, MainScreen.tag);
-                            },*/
-                            color: food_textColorPrimary),*/
-                  ),
-                ),
+                // Align(
+                //   alignment: Alignment.topCenter,
+                //   child: Container(
+                //     transform: Matrix4.translationValues(0.0, -20.0, 0.0),
+                //     alignment: Alignment.center,
+                //     decoration: BoxDecoration(
+                //         shape: BoxShape.circle, color: food_white),
+                //     width: width * 0.13,
+                //     height: width * 0.13,
+                //     //child:
+                //
+                //     //Icon(Icons.arrow_forward, color: food_textColorPrimary),
+                //     /*IconButton(
+                //             icon: Icon(Icons.arrow_forward),
+                //             /*onPressed: () {
+                //               //Navigator.pushNamed(context, MainScreen.tag);
+                //             },*/
+                //             color: food_textColorPrimary),*/
+                //   ),
+                // ),
                 Container(
                   alignment: Alignment.bottomCenter,
                   padding: EdgeInsets.all(spacing_standard_new),
@@ -185,8 +186,8 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                       SizedBox(height: width * 0.07),
                       GestureDetector(
                         onTap: () {
-                          //launchScreen(context, RegisterScreen.tag);
-                          Navigator.pushNamed(context, RegisterScreen.tag);
+                          Navigator.pop(context);
+                          Navigator.pushNamed(context, LoginScreen.tag);
                         },
                         child: Container(
                           decoration: boxDecoration(

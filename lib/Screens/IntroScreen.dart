@@ -179,6 +179,7 @@ class _IntroScreenState extends State<IntroScreen> {
                     child: IconButton(
                       color: Colors.white,
                       onPressed: () {
+                        Navigator.pop(context);
                         Navigator.pushNamed(context, MainScreen.tag);
                       },
                       icon: Icon(Icons.arrow_forward),

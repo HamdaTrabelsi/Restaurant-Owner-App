@@ -59,7 +59,8 @@ Widget text(var text,
           letterSpacing: latterSpacing));
 }
 
-Padding editTextStyle(var hintText, {isPassword = true, Function onchange}) {
+Padding editTextStyle(var hintText,
+    {isPassword = true, Function onchange, TextInputType type}) {
   return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
       child: TextFormField(
@@ -69,6 +70,7 @@ Padding editTextStyle(var hintText, {isPassword = true, Function onchange}) {
             fontFamily: fontRegular,
             color: Colors.black),
         obscureText: isPassword,
+        keyboardType: type,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(26, 18, 4, 18),
           hintText: hintText,

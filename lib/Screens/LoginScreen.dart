@@ -88,8 +88,9 @@ class LoginScreenState extends State<LoginScreen> {
                     height: 70,
                     width: 70,
                   )),
-              editTextStyle(t3_hint_Email, isPassword: false,
-                  onchange: (value) {
+              editTextStyle(t3_hint_Email,
+                  isPassword: false,
+                  type: TextInputType.emailAddress, onchange: (value) {
                 email = value;
               }),
               SizedBox(height: 16),
@@ -122,8 +123,12 @@ class LoginScreenState extends State<LoginScreen> {
                 child: AppButton(
                     textContent: t3_lbl_sign_in,
                     onPressed: () async {
-                      await authentication.classicSignIn(
-                          context: context, email: email, password: password);
+                      if (email.trim() != null && password != null) {
+                        await authentication.classicSignIn(
+                            context: context,
+                            email: email.trim(),
+                            password: password);
+                      }
                       // try {
                       //   final user = await _auth.signInWithEmailAndPassword(
                       //       email: email, password: password);
@@ -138,9 +143,9 @@ class LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 20,
               ),
-              text(t3_lbl_forgot_password),
+              //text(t3_lbl_forgot_password),
               SizedBox(
-                height: 16,
+                height: 26,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -157,6 +162,7 @@ class LoginScreenState extends State<LoginScreen> {
                               color: t3_colorPrimary,
                             )),
                         onTap: () {
+                          Navigator.pop(context);
                           Navigator.pushNamed(context, RegisterScreen.tag);
                         }),
                   )
@@ -180,6 +186,16 @@ class LoginScreenState extends State<LoginScreen> {
                             margin: EdgeInsets.only(top: 25, left: 10),
                             child: Image.asset(
                               t3_ic_sign4,
+                              height: 50,
+                              width: 70,
+                            )),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                            margin: EdgeInsets.only(top: 25, left: 10),
+                            child: Image.asset(
+                              t3_ic_sign3,
                               height: 50,
                               width: 70,
                             )),

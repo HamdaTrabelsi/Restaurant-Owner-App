@@ -19,13 +19,13 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
   int currentIndexPage = 0;
   int pageLength;
   var titles = [
-    "Discover",
+    "Welcome !",
     "Get Bigger",
     "Manage More",
   ];
   var subTitles = [
-    "Welcome to Foodz Owner, here we offer you a lot of features",
-    "We help you get more cutomers while simplifying the process of reaching a bigger audience",
+    "as a restaurant owner we offer you your own restaurant management App",
+    "We help you get more customers while simplifying the process of reaching a bigger audience",
     "Here you can manage your restaurant from the smallest details all the way to the Menu and the reservations",
   ];
 
@@ -141,8 +141,8 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(context, WelcomeScreen.tag);
                           Navigator.pop(context);
+                          Navigator.pushNamed(context, WelcomeScreen.tag);
                         },
                       ),
                     ),
@@ -165,6 +165,7 @@ class WalkThrough extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+        padding: EdgeInsets.symmetric(vertical: 30),
         width: MediaQuery.of(context).size.width,
         alignment: Alignment.topCenter,
         child:
@@ -175,7 +176,7 @@ class WalkThrough extends StatelessWidget {
       ),*/
             Image.asset(
           textContent,
-          width: 280,
+          width: 220,
           height: (MediaQuery.of(context).size.height) / 2.3,
         ));
   }
