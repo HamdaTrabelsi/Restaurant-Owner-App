@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foodz_owner/Screens/IntroScreen.dart';
 import 'package:foodz_owner/Screens/LoginScreen.dart';
+import 'package:foodz_owner/Screens/MainScreen.dart';
 import 'package:foodz_owner/Screens/RegisterScreen.dart';
 import 'package:foodz_owner/utils/consts/colors.dart';
 import 'package:foodz_owner/utils/welcomeScreen/FoodColors.dart';
@@ -24,11 +25,18 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class WelcomeScreenState extends State<WelcomeScreen> {
+  bool isLoggedIn;
   final googleSignIn = GoogleSignIn();
   //FacebookLogin _facebookLogin = FacebookLogin();
   final _auth = FirebaseAuth.instance;
   User _user;
   Authentication authentication = Authentication();
+
+  @override
+  void initState() {
+    //_user.email != null ? isLoggedIn = true : isLoggedIn = false;
+    super.initState();
+  }
 
   //final fbLogin = FacebookLogin();
 
@@ -196,10 +204,10 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                               color: food_white),
                           width: width,
                           padding: EdgeInsets.all(spacing_middle),
-                          child: text(food_lbl_continue_with_email_mobile,
+                          child: text("Continue with Email/Password",
                               textColor: food_white, isCentered: true),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 )

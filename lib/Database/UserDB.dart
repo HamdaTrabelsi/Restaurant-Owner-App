@@ -13,6 +13,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:foodz_owner/utils/CustomSnackbar.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDB {
   final CollectionReference userCollection =
@@ -101,6 +102,7 @@ class UserDB {
         flushbarPosition: FlushbarPosition.TOP,
         title: "Success",
         message: "It's done !",
+        backgroundColor: Theme.of(context).accentColor,
         duration: Duration(seconds: 3),
       )..show(context);
     }).catchError((e) {
@@ -119,5 +121,117 @@ class UserDB {
     return fireUser;
   }
 
+  Future<void> editTextField(
+      {@required String id,
+      @required String field,
+      @required String newValue,
+      @required BuildContext context}) async {
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection("users").doc(id);
+
+    documentReference.update({field: newValue}).whenComplete(() {
+      Flushbar(
+        flushbarPosition: FlushbarPosition.TOP,
+        title: "Success",
+        message: "Saved !",
+        backgroundColor: Theme.of(context).accentColor,
+        duration: Duration(seconds: 3),
+      )..show(context);
+    }).catchError((e) {
+      Flushbar(
+        flushbarPosition: FlushbarPosition.TOP,
+        title: "Error",
+        message: e.toString(),
+        duration: Duration(seconds: 3),
+      )..show(context);
+    });
+  }
+
+  Future<void> editBirthdateField(
+      {@required String id,
+      @required DateTime newValue,
+      @required BuildContext context}) async {
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection("users").doc(id);
+
+    documentReference.update({"birthDate": newValue}).whenComplete(() {
+      Flushbar(
+        flushbarPosition: FlushbarPosition.TOP,
+        title: "Success",
+        message: "Saved !",
+        backgroundColor: Theme.of(context).accentColor,
+        duration: Duration(seconds: 3),
+      )..show(context);
+    }).catchError((e) {
+      Flushbar(
+        flushbarPosition: FlushbarPosition.TOP,
+        title: "Error",
+        message: e.toString(),
+        duration: Duration(seconds: 3),
+      )..show(context);
+    });
+  }
+
+  Future<void> editPassword(
+      {@required String oldPass,
+      @required String newPass,
+      @required String repPass,
+      @required BuildContext context}) async {
+    myUser = _auth.currentUser;
+
+    if (newPass == repPass) {
+      var checkCurrentPass = await validatePassword(oldPass);
+      if (checkCurrentPass == false) {
+        return Flushbar(
+          flushbarPosition: FlushbarPosition.TOP,
+          title: "Error",
+          backgroundColor: Colors.red,
+          message: "Please type your Current Password correctly",
+          duration: Duration(seconds: 3),
+        )..show(context);
+      } else {
+        myUser.updatePassword(newPass).whenComplete(() {
+          return Flushbar(
+            flushbarPosition: FlushbarPosition.TOP,
+            backgroundColor: Colors.green,
+            title: "Success",
+            message: "Your password has been updated !",
+            duration: Duration(seconds: 3),
+          )..show(context);
+          Navigator.pop(context);
+        });
+      }
+    } else {
+      // Passwords don't match
+      return Flushbar(
+        flushbarPosition: FlushbarPosition.TOP,
+        title: "Error",
+        backgroundColor: Colors.red,
+        message: "Password and repeated password don't match",
+        duration: Duration(seconds: 3),
+      )..show(context);
+    }
+  }
+
+  Future<bool> validatePassword(String password) async {
+    myUser = _auth.currentUser;
+
+    var authCredentials =
+        EmailAuthProvider.credential(email: myUser.email, password: password);
+
+    try {
+      var authResult =
+          await myUser.reauthenticateWithCredential(authCredentials);
+      return authResult.user != null;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
   // Stream<QuerySnapshot> retrieveUsers() {}
+
+  Future<void> changeFirstTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('showWalk', 0);
+  }
 }

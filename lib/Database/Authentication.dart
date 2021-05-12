@@ -66,6 +66,7 @@ class Authentication {
       }
       await FirebaseAuth.instance.signOut();
       Navigator.pop(context);
+      Navigator.pop(context);
       Navigator.pushNamed(context, WelcomeScreen.tag);
     } catch (e) {
       Flushbar(

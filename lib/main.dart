@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:foodz_owner/Provider/app_provider.dart';
@@ -13,9 +14,14 @@ import 'package:foodz_owner/Screens/AddPlateScreen.dart';
 import 'package:foodz_owner/Screens/TestMap.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+int wlkScreen;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  wlkScreen = prefs.getInt("showWalk");
   await Firebase.initializeApp();
   runApp(
     MultiProvider(
@@ -41,7 +47,11 @@ class MyApp extends StatelessWidget {
           title: Constants.appName,
           theme: appProvider.theme,
           darkTheme: Constants.darkTheme,
-          initialRoute: WalkthroughScreen.tag,
+          initialRoute: wlkScreen == 0
+              ? FirebaseAuth.instance.currentUser == null
+                  ? WelcomeScreen.tag
+                  : MainScreen.tag
+              : WalkthroughScreen.tag,
           routes: {
             WalkthroughScreen.tag: (context) => WalkthroughScreen(),
             WelcomeScreen.tag: (context) => WelcomeScreen(),

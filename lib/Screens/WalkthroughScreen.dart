@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:foodz_owner/Database/UserDB.dart';
+import 'package:foodz_owner/Screens/CheckScreen.dart';
 import 'package:foodz_owner/Screens/WelcomeScreen.dart';
 //import 'package:foodz_owner/utils/consts/AppConstant.dart';
 import 'package:foodz_owner/utils/consts/T3Images.dart';
@@ -8,6 +10,8 @@ import 'package:foodz_owner/utils/consts/T3Constant.dart';
 import 'package:foodz_owner/utils/consts/colors.dart';
 import 'package:foodz_owner/utils/dots_indicator/dots_indicator.dart';
 import 'package:foodz_owner/utils/welcomeScreen/FoodColors.dart';
+
+UserDB _userDB = UserDB();
 
 class WalkthroughScreen extends StatefulWidget {
   static String tag = '/WalkthroughScreen';
@@ -140,9 +144,10 @@ class _WalkthroughScreenState extends State<WalkthroughScreen> {
                             ),
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          await _userDB.changeFirstTime();
                           Navigator.pop(context);
-                          Navigator.pushNamed(context, WelcomeScreen.tag);
+                          Navigator.pushNamed(context, CheckScreen.tag);
                         },
                       ),
                     ),

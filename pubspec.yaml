@@ -47,6 +47,9 @@ dependencies:
   another_flushbar: ^1.10.20
   auto_size_text: ^2.1.0
   intl: ^0.17.0
+  flutter_datetime_picker: ^1.5.1
+  sweetsheet: ^0.2.0
+  flutter_native_splash: ^1.1.8+4
 
 
 #Maps
@@ -59,6 +62,13 @@ dependencies:
       ref: nullsafety_viet
 
 
+flutter_native_splash:
+  #color: "#FD825D"
+  color: "#4CAF50"
+  image: "images/offline/chefLogo.png"
+  #color_dark: "#000000"
+  android: true
+  ios: true
 
 
 dev_dependencies:
