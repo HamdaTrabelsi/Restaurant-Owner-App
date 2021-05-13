@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/Database/RestaurantDB.dart';
 import 'package:foodz_owner/Models/Utilisateur.dart';
 import 'package:foodz_owner/Screens/IntroScreen.dart';
 import 'package:foodz_owner/Screens/MainScreen.dart';
@@ -14,6 +15,7 @@ class Authentication {
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
+  RestaurantDB restDB = RestaurantDB();
   User myUser;
 
   final _auth = FirebaseAuth.instance;
@@ -107,8 +109,8 @@ class Authentication {
               name: cred.user.displayName,
               mail: cred.user.email);
         }
-        Navigator.pop(context);
-        Navigator.pushNamed(context, IntroScreen.tag);
+
+        await redirectToProfile(id: cred.user.uid, context: context);
       } catch (e) {
         Flushbar(
           flushbarPosition: FlushbarPosition.TOP,
@@ -117,6 +119,19 @@ class Authentication {
           duration: Duration(seconds: 3),
         )..show(context);
       }
+    }
+  }
+
+  Future<void> redirectToProfile({String id, BuildContext context}) async {
+    bool exists = await restDB.hasRestaurant(id: id);
+    if (exists == true) {
+      print("has a restaurant" + exists.toString());
+      Navigator.pop(context);
+      Navigator.pushNamed(context, MainScreen.tag);
+    } else {
+      print("doesn't have a restaurant" + exists.toString());
+      Navigator.pop(context);
+      Navigator.pushNamed(context, IntroScreen.tag);
     }
   }
 
@@ -137,8 +152,7 @@ class Authentication {
             name: username,
             mail: _auth.currentUser.email);
 
-        Navigator.pop(context);
-        Navigator.pushNamed(context, IntroScreen.tag);
+        await redirectToProfile(id: _auth.currentUser.uid, context: context);
       }
     } catch (e) {
       Flushbar(

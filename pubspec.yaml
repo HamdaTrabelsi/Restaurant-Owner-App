@@ -50,9 +50,12 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   sweetsheet: ^0.2.0
   flutter_native_splash: ^1.1.8+4
+  cool_stepper: ^1.2.1
+  multi_select_flutter: ^4.0.0
+  loader_overlay: ^2.0.1
+  geocoding: ^2.0.0
 
-
-#Maps
+  #Maps
   latlong2: ^0.8.0
   http: ^0.13.3
 

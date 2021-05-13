@@ -172,60 +172,68 @@ class _ProfileScreen extends State<ProfileScreen> {
                                 ],
                               ),
                               SizedBox(height: 5.0),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  MaterialButton(
-                                    disabledColor:
-                                        Theme.of(context).accentColor,
-                                    height: 40,
-                                    child: _isLoading == true
-                                        ? Container(
-                                            child: CircularProgressIndicator(
-                                              backgroundColor: Colors.white,
-                                            ),
-                                          )
-                                        : Icon(Icons.save),
-                                    onPressed: _isDisabled == true
-                                        ? null
-                                        : () async {
-                                            if (_image != null) {
-                                              setState(() {
-                                                _isDisabled = true;
-                                                _isLoading = true;
-                                              });
+                              _image != null
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        MaterialButton(
+                                          disabledColor:
+                                              Theme.of(context).accentColor,
+                                          height: 40,
+                                          child: _isLoading == true
+                                              ? Container(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                  ),
+                                                )
+                                              : Icon(Icons.save, size: 25),
+                                          onPressed: _isDisabled == true
+                                              ? null
+                                              : () async {
+                                                  if (_image != null) {
+                                                    setState(() {
+                                                      _isDisabled = true;
+                                                      _isLoading = true;
+                                                    });
 
-                                              String res =
-                                                  await _userDB.storeUserImage(
-                                                      upImage: _image,
-                                                      context: context,
-                                                      id: snapshot.data["uid"]);
-                                              await _userDB.savePicUrl(
-                                                  id: snapshot.data["uid"],
-                                                  url: res,
-                                                  context: context);
+                                                    String res = await _userDB
+                                                        .storeUserImage(
+                                                            upImage: _image,
+                                                            context: context,
+                                                            id: snapshot
+                                                                .data["uid"]);
+                                                    await _userDB.savePicUrl(
+                                                        id: snapshot
+                                                            .data["uid"],
+                                                        url: res,
+                                                        context: context);
 
-                                              setState(() {
-                                                _isLoading = false;
-                                                _isDisabled = false;
-                                              });
-                                            }
-                                          },
-                                    color: Theme.of(context).accentColor,
-                                    textColor: Colors.white,
-                                    minWidth: 20,
-                                  ),
+                                                    setState(() {
+                                                      _isLoading = false;
+                                                      _isDisabled = false;
+                                                    });
+                                                  }
+                                                },
+                                          color: Theme.of(context).accentColor,
+                                          textColor: Colors.white,
+                                          minWidth: 20,
+                                        ),
 
-                                  // Text(
-                                  //   snapshot.data["email"],
-                                  //   style: TextStyle(
-                                  //     fontSize: 14.0,
-                                  //     fontWeight: FontWeight.bold,
-                                  //   ),
-                                  // ),
-                                ],
-                              ),
+                                        // Text(
+                                        //   snapshot.data["email"],
+                                        //   style: TextStyle(
+                                        //     fontSize: 14.0,
+                                        //     fontWeight: FontWeight.bold,
+                                        //   ),
+                                        // ),
+                                      ],
+                                    )
+                                  : SizedBox(
+                                      height: 1,
+                                    ),
                               SizedBox(height: 20.0),
                               Row(
                                 mainAxisAlignment:
