@@ -64,6 +64,14 @@ class MyApp extends StatelessWidget {
             EditPlateScreen.tag: (context) => EditPlateScreen(),
             TestScreen.tag: (context) => TestScreen(),
           },
+          // onGenerateRoute: (RouteSettings settings) {
+          //   print('build route for ${settings.name}');
+          //   var routes = <String, WidgetBuilder>{
+          //     FoodDetailsScreen.tag: (ctx) => FoodDetailsScreen(settings.arguments),
+          //   };
+          //   WidgetBuilder builder = routes[settings.name];
+          //   return MaterialPageRoute(builder: (ctx) => builder(ctx));
+          // },
         );
       },
     );

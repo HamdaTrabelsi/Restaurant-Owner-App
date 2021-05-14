@@ -1,8 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/Models/Dish.dart';
+import 'package:foodz_owner/Screens/PlateDetailsScreen.dart';
 import 'package:foodz_owner/Widgets/Rounded_Category_Title.dart';
 import 'package:foodz_owner/Widgets/Grid_Product.dart';
 import 'package:foodz_owner/utils/consts/colors.dart';
 import 'package:foodz_owner/Screens/AddPlateScreen.dart';
+import 'package:foodz_owner/utils/consts/const.dart';
+
+User loggedInUser;
+final _auth = FirebaseAuth.instance;
 
 class MenuScreen extends StatefulWidget {
   static String tag = '/MenuScreen';
@@ -12,6 +20,7 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreen extends State<MenuScreen> {
+  List<Dish> listDishes = [];
   List<Map> foods = [
     {"img": "images/offline/food1.jpeg", "name": "Fruit Salad"},
     {"img": "images/offline/food2.jpeg", "name": "Fruit Salad"},
@@ -27,10 +36,28 @@ class _MenuScreen extends State<MenuScreen> {
     {"img": "images/offline/food12.jpg", "name": "Salad"},
   ];
 
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    getCurrentUser();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
         body: Padding(
           padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
@@ -59,30 +86,120 @@ class _MenuScreen extends State<MenuScreen> {
                 ),
               ),
               SizedBox(height: 20.0),
-              GridView.builder(
-                shrinkWrap: true,
-                primary: false,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: MediaQuery.of(context).size.width /
-                      (MediaQuery.of(context).size.height / 1.25),
-                ),
-                itemCount: foods == null ? 0 : foods.length,
-                itemBuilder: (BuildContext context, int index) {
+              StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('dishes')
+                    .where("restoID", isEqualTo: loggedInUser.uid)
+                    .snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: Container(child: CircularProgressIndicator()));
+                  }
+                  //print(snapshot.data.docs[0].id);
+                  if (snapshot.data.docs.isNotEmpty) {
+                    listDishes.clear();
+                    snapshot.data.docs.forEach((element) {
+                      listDishes.add(Dish.fromJson(element));
+                    });
+
+                    print("the docs   " + snapshot.data.docs.length.toString());
+                    print("the list " + listDishes.length.toString());
+
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      primary: false,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: MediaQuery.of(context).size.width /
+                            (MediaQuery.of(context).size.height / 1.25),
+                      ),
+                      itemCount: listDishes == null ? 0 : listDishes.length,
+                      itemBuilder: (BuildContext context, int index) {
 //                Food food = Food.fromJson(foods[index]);
-                  Map res = foods[index];
+                        Dish res = listDishes[index];
 //                print(foods);
-//                print(foods.length);
-                  return GridProduct(
-                    img: res['img'],
-                    isFav: true,
-                    name: res['name'],
-                    rating: 5.0,
-                    raters: 23,
-                  );
+                        return GridProduct(
+                          img: res.image,
+                          isFav: true,
+                          name: res.name,
+                          rating: 5.0,
+                          raters: 23,
+                          ontap: () {
+                            Navigator.pushNamed(context, FoodDetailsScreen.tag,
+                                arguments: res.uid);
+                          },
+                        );
+                      },
+                    );
+                  } else {
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 280,
+                        child: Stack(
+                          children: <Widget>[
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 100,
+                                ),
+                                Image.asset("images/offline/serving-dish.png",
+                                    width: 230, height: 120),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text("Empty!",
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        color: Constants.lightAccent,
+                                        fontWeight: FontWeight.bold)),
+                                Container(height: 10),
+                                Text(
+                                    "You don't have a menu yet, Start by Adding some Dishes !",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Constants.lightAccent,
+                                    )),
+                                Container(height: 25),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
+              //               GridView.builder(
+//                 shrinkWrap: true,
+//                 primary: false,
+//                 physics: NeverScrollableScrollPhysics(),
+//                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                   crossAxisCount: 2,
+//                   childAspectRatio: MediaQuery.of(context).size.width /
+//                       (MediaQuery.of(context).size.height / 1.25),
+//                 ),
+//                 itemCount: foods == null ? 0 : foods.length,
+//                 itemBuilder: (BuildContext context, int index) {
+// //                Food food = Food.fromJson(foods[index]);
+//                   Map res = foods[index];
+// //                print(foods);
+// //                print(foods.length);
+//                   return GridProduct(
+//                     img: res['img'],
+//                     isFav: true,
+//                     name: res['name'],
+//                     rating: 5.0,
+//                     raters: 23,
+//                   );
+//                 },
+//               ),
+
               SizedBox(height: 30),
             ],
           ),

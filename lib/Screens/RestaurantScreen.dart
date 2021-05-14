@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:foodz_owner/Database/RestaurantDB.dart';
 import 'package:foodz_owner/Models/Restaurant.dart';
@@ -15,7 +16,7 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 RestaurantDB restDB = RestaurantDB();
 User loggedInUser;
 final _auth = FirebaseAuth.instance;
-List<String> _selectedCuisines = ["hey", "hey2", "hey3"];
+List<String> _selectedCuisines = [];
 List _cuisines = [
   "Tunisian",
   "Italian",
@@ -73,10 +74,13 @@ class _RestaurantScreen extends State<RestaurantScreen> {
         stream: /*restDB.getRestaurant(id: loggedInUser.uid)*/ FirebaseFirestore
             .instance
             .collection('restaurant')
-            .doc(myUser.uid)
+            .doc(loggedInUser.uid)
             .snapshots(),
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Container(child: CircularProgressIndicator()));
+          }
+          if (snapshot.data.exists) {
             //print(snapshot.data.data());
             //userDocumentt = Map.from(snapshot.data);
             Map<String, dynamic> data = snapshot.data.data();
@@ -311,6 +315,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                                 child: Column(
                                   children: <Widget>[
                                     MultiSelectBottomSheetField(
+                                      initialValue: myRes.cuisine,
                                       key: _multiSelectKey,
                                       initialChildSize: 0.4,
                                       listType: MultiSelectListType.CHIP,
@@ -325,7 +330,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                                       onConfirm: (values) async {
                                         _multiSelectKey.currentState.validate();
                                         await restDB.editCuisineField(
-                                            id: myUser.uid,
+                                            id: loggedInUser.uid,
                                             newValue: values,
                                             context: context);
                                       },
@@ -662,7 +667,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
             ),*/
             );
           } else {
-            return Center(child: Container(child: CircularProgressIndicator()));
+            return Center(child: Container(child: Text("No restaurant")));
           }
         });
   }

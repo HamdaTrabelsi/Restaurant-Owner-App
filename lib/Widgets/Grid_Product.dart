@@ -9,14 +9,15 @@ class GridProduct extends StatelessWidget {
   final bool isFav;
   final double rating;
   final int raters;
-
+  final Function ontap;
   GridProduct(
       {Key key,
       @required this.name,
       @required this.img,
       @required this.isFav,
       @required this.rating,
-      @required this.raters})
+      @required this.raters,
+      @required this.ontap})
       : super(key: key);
 
   @override
@@ -33,7 +34,7 @@ class GridProduct extends StatelessWidget {
                 width: MediaQuery.of(context).size.width / 2.2,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: Image.asset(
+                  child: Image.network(
                     "$img",
                     fit: BoxFit.cover,
                   ),
@@ -74,15 +75,7 @@ class GridProduct extends StatelessWidget {
           ),
         ],
       ),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) {
-              return FoodDetailsScreen();
-            },
-          ),
-        );
-      },
+      onTap: ontap,
     );
   }
 }

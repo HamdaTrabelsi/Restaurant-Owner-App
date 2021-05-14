@@ -1,7 +1,13 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/Models/Dish.dart';
+import 'package:foodz_owner/Screens/AddPlateScreen.dart';
+import 'package:foodz_owner/Screens/PlateDetailsScreen.dart';
+import 'package:foodz_owner/utils/ErrorFlushBar.dart';
 import 'package:foodz_owner/utils/SnackUtil.dart';
+import 'package:foodz_owner/utils/SuccessFlushBar.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditPlateScreen extends StatefulWidget {
@@ -13,6 +19,7 @@ class EditPlateScreen extends StatefulWidget {
 
 class _EditPlateScreen extends State<EditPlateScreen> {
   File _image;
+  String imageUrl;
   final _picker = ImagePicker();
   String _type;
   bool fieldName = true;
@@ -21,10 +28,12 @@ class _EditPlateScreen extends State<EditPlateScreen> {
   bool fieldDesc = true;
   bool _isconfirmed = true;
 
-  TextEditingController _NameController;
-  TextEditingController _DescController;
-  TextEditingController _SubController;
-  TextEditingController _PriceController;
+  TextEditingController _NameController = new TextEditingController();
+  TextEditingController _DescController = new TextEditingController();
+  TextEditingController _PriceController = new TextEditingController();
+  TextEditingController _cuisinController = new TextEditingController();
+  TextEditingController _categoryController = new TextEditingController();
+  TextEditingController _imageController = new TextEditingController();
 
   static const _types = [
     'Appetizer',
@@ -33,6 +42,16 @@ class _EditPlateScreen extends State<EditPlateScreen> {
     'Salad',
     'Fast Food',
     'Drink',
+  ];
+
+  List _cuisines = [
+    "Tunisian",
+    "Italian",
+    "Chinese",
+    "Japanese",
+    "Egyptian",
+    "Fast Food",
+    "Indian"
   ];
 
   void checkFields() {
@@ -44,17 +63,18 @@ class _EditPlateScreen extends State<EditPlateScreen> {
   @override
   void initState() {
     super.initState();
-    _NameController = new TextEditingController(text: 'Vegan Salad');
-    _DescController = new TextEditingController(
-      text:
-          "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.",
-    );
-    _SubController = new TextEditingController(text: 'with Lamb Sauce');
-    _PriceController = new TextEditingController(text: '3.5 Dt');
   }
 
   @override
   Widget build(BuildContext context) {
+    Dish dish = ModalRoute.of(context).settings.arguments;
+    _NameController.text = dish.name;
+    _DescController.text = dish.description;
+    _PriceController.text = dish.price;
+    _categoryController.text = dish.category;
+    _cuisinController.text = dish.cuisine;
+    _imageController.text = dish.image;
+
     return Scaffold(
         body: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, top: 50),
@@ -69,15 +89,15 @@ class _EditPlateScreen extends State<EditPlateScreen> {
                       },
                       child: Icon(Icons.arrow_back)
                       /*SvgPicture.asset(
-                      "assets/icons/backward.svg",
-                      height: 11,
-                    ),*/
+                        "assets/icons/backward.svg",
+                        height: 11,
+                      ),*/
                       ),
                   //Icon(Icons.menu),
                   /*SvgPicture.asset(
-                    "assets/icons/menu.svg",
-                    height: 11,
-                  ),*/
+                      "assets/icons/menu.svg",
+                      height: 11,
+                    ),*/
                 ],
               ),
               Center(
@@ -97,7 +117,7 @@ class _EditPlateScreen extends State<EditPlateScreen> {
                         image: DecorationImage(
                           image: /*AssetImage("images/offline/food1.jpeg")*/ _image ==
                                   null
-                              ? AssetImage("images/offline/food1.jpeg")
+                              ? NetworkImage(_imageController.text)
                               : FileImage(File(_image.path)),
                           fit: BoxFit.cover,
                         ),
@@ -149,12 +169,12 @@ class _EditPlateScreen extends State<EditPlateScreen> {
                             borderSide: BorderSide(color: Colors.grey)),
                       ),
                       onChanged: (value) {
-                        if (value != null) {
-                          fieldName = true;
-                          setState(() {
-                            checkFields();
-                          });
-                        }
+                        // if (value != null) {
+                        //   fieldName = true;
+                        //   setState(() {
+                        //     checkFields();
+                        //   });
+                        // }
                       },
                     ),
                     SizedBox(
@@ -175,7 +195,7 @@ class _EditPlateScreen extends State<EditPlateScreen> {
                               isDense:
                                   true, // Reduces the dropdowns height by +/- 50%
                               icon: Icon(Icons.keyboard_arrow_down),
-                              value: "Dessert",
+                              value: _categoryController.text,
                               items: _types.map((item) {
                                 return DropdownMenuItem(
                                   value: item,
@@ -192,36 +212,35 @@ class _EditPlateScreen extends State<EditPlateScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    TextField(
-                      controller: _SubController,
-                      style: TextStyle(fontSize: 18),
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.words,
-                      decoration: InputDecoration(
-                        prefixIcon: Padding(
-                          padding: EdgeInsetsDirectional.only(start: 12),
-                          child: Icon(
-                            Icons.short_text,
-                            color: Colors.grey,
-                          ),
+                    InputDecorator(
+                        decoration: InputDecoration(
+                          labelText: 'Cuisine',
+                          labelStyle: Theme.of(context)
+                              .primaryTextTheme
+                              .caption
+                              .copyWith(color: Colors.black),
+                          border: const OutlineInputBorder(),
                         ),
-                        hintText: 'Subtitle',
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey)),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(color: Colors.grey)),
-                      ),
-                      onChanged: (value) {
-                        if (value != null) {
-                          fieldSub = true;
-                          setState(() {
-                            checkFields();
-                          });
-                        }
-                      },
-                    ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                              isExpanded: true,
+                              isDense:
+                                  true, // Reduces the dropdowns height by +/- 50%
+                              icon: Icon(Icons.keyboard_arrow_down),
+                              value: _cuisinController.text,
+                              items: _cuisines.map((item) {
+                                return DropdownMenuItem(
+                                  value: item,
+                                  child: Text(item),
+                                );
+                              }).toList(),
+                              onChanged: (selectedItem) {
+                                setState(() {
+                                  _cuisinController.text = selectedItem;
+                                  checkFields();
+                                });
+                              }),
+                        )),
                     SizedBox(
                       height: 20,
                     ),
@@ -305,10 +324,29 @@ class _EditPlateScreen extends State<EditPlateScreen> {
           icon: Icon(_isconfirmed ? Icons.check : Icons.error),
           label: Text("Modify Dish"),
           onPressed: () async {
-            //Navigator.pushNamed(context, AddPlateScreen.tag);
-            //SnackUtil.showSnackBar(context, "New Dish added");
-            await Future.delayed(Duration(seconds: 2));
-            Navigator.pop(context);
+            if (_image != null) {
+              imageUrl = await dishDB.storeDishImage(upImage: _image);
+            } else {
+              imageUrl = _imageController.text;
+            }
+            await dishDB
+                .editDish(
+                    id: dish.uid,
+                    name: _NameController.text,
+                    category: _categoryController.text,
+                    cuisine: _cuisinController.text,
+                    description: _DescController.text,
+                    price: _PriceController.text,
+                    image: imageUrl)
+                .catchError((e) {
+              ErrorFlush.showErrorFlush(
+                  message: e.toString(), context: context);
+            }).whenComplete(() {
+              SuccessFlush.showSuccessFlush(
+                  context: context, message: "Dish edited successfully !");
+            });
+            // Navigator.pushNamed(context, FoodDetailsScreen.tag,
+            //     arguments: dish.uid);
           },
         ));
   }
