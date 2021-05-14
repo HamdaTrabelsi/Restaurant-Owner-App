@@ -54,6 +54,7 @@ dependencies:
   multi_select_flutter: ^4.0.0
   loader_overlay: ^2.0.1
   geocoding: ^2.0.0
+  filter_list: ^0.0.9
 
   #Maps
   latlong2: ^0.8.0

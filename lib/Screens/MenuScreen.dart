@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/Models/ChoiceChipData.dart';
 import 'package:foodz_owner/Models/Dish.dart';
 import 'package:foodz_owner/Screens/PlateDetailsScreen.dart';
 import 'package:foodz_owner/Widgets/Rounded_Category_Title.dart';
 import 'package:foodz_owner/Widgets/Grid_Product.dart';
+import 'package:foodz_owner/utils/ChoiceChipData.dart';
 import 'package:foodz_owner/utils/consts/colors.dart';
 import 'package:foodz_owner/Screens/AddPlateScreen.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
@@ -20,7 +22,10 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreen extends State<MenuScreen> {
+  List<ChoiceChipData> choiceChips = ChoiceChips.all;
   List<Dish> listDishes = [];
+  String _selected;
+
   List<Map> foods = [
     {"img": "images/offline/food1.jpeg", "name": "Fruit Salad"},
     {"img": "images/offline/food2.jpeg", "name": "Fruit Salad"},
@@ -72,25 +77,60 @@ class _MenuScreen extends State<MenuScreen> {
                 ),
               ),
               SizedBox(height: 20.0),
+              // SingleChildScrollView(
+              //   scrollDirection: Axis.horizontal,
+              //   child: Row(
+              //     children: <Widget>[
+              //       CategoryTitle(title: "All", active: true),
+              //       CategoryTitle(title: "Dessert"),
+              //       CategoryTitle(title: "Main Course"),
+              //       CategoryTitle(title: "Fast Food"),
+              //       CategoryTitle(title: "Appetizer"),
+              //       CategoryTitle(title: "Drinks"),
+              //     ],
+              //   ),
+              // ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: <Widget>[
-                    CategoryTitle(title: "All", active: true),
-                    CategoryTitle(title: "Dessert"),
-                    CategoryTitle(title: "Main Course"),
-                    CategoryTitle(title: "Fast Food"),
-                    CategoryTitle(title: "Appetizer"),
-                    CategoryTitle(title: "Drinks"),
-                  ],
+                  children: choiceChips
+                      .map((choiceChip) => Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            child: ChoiceChip(
+                              label: Text(choiceChip.label),
+                              selectedColor: Colors.green,
+                              onSelected: (isSelected) {
+                                setState(() {
+                                  choiceChips = choiceChips.map((otherChip) {
+                                    final newChip =
+                                        otherChip.copy(isSelected: false);
+                                    _selected = choiceChip.label;
+                                    print(_selected);
+                                    return choiceChip == newChip
+                                        ? newChip.copy(isSelected: isSelected)
+                                        : newChip;
+                                  }).toList();
+                                });
+                              },
+                              selected: choiceChip.isSelected,
+                            ),
+                          ))
+                      .toList(),
                 ),
               ),
               SizedBox(height: 20.0),
+
               StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('dishes')
-                    .where("restoID", isEqualTo: loggedInUser.uid)
-                    .snapshots(),
+                stream: _selected == "All" || _selected == null
+                    ? FirebaseFirestore.instance
+                        .collection('dishes')
+                        .where("restoID", isEqualTo: loggedInUser.uid)
+                        .snapshots()
+                    : FirebaseFirestore.instance
+                        .collection('dishes')
+                        .where("restoID", isEqualTo: loggedInUser.uid)
+                        .where("category", isEqualTo: _selected)
+                        .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
@@ -103,8 +143,8 @@ class _MenuScreen extends State<MenuScreen> {
                       listDishes.add(Dish.fromJson(element));
                     });
 
-                    print("the docs   " + snapshot.data.docs.length.toString());
-                    print("the list " + listDishes.length.toString());
+                    //print("the docs   " + snapshot.data.docs.length.toString());
+                    //print("the list " + listDishes.length.toString());
 
                     return GridView.builder(
                       shrinkWrap: true,
