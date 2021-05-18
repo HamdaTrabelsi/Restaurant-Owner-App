@@ -352,17 +352,18 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                                         },
                                       ),
                                     ),
-                                    _selectedCuisines == null ||
-                                            _selectedCuisines.isEmpty
-                                        ? Container(
-                                            padding: EdgeInsets.all(10),
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              "You should select at least one cuisine",
-                                              style: TextStyle(
-                                                  color: Colors.black54),
-                                            ))
-                                        : Container(),
+                                    // _selectedCuisines == null ||
+                                    //         _selectedCuisines.isEmpty
+                                    //     ? Container(
+                                    //         padding: EdgeInsets.all(10),
+                                    //         alignment: Alignment.centerLeft,
+                                    //         child: Text(
+                                    //           "You should select at least one cuisine",
+                                    //           style: TextStyle(
+                                    //               color: Colors.black54),
+                                    //         ))
+                                    //     :
+                                    Container(),
                                   ],
                                 ),
                               ),

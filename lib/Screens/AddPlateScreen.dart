@@ -363,54 +363,56 @@ class _AddPlateScreen extends State<AddPlateScreen> {
                   : Icons.check
               : Icons.error),
           label: Text(_isLoading ? "Saving" : "Add New Dish"),
-          onPressed: _isLoading
-              ? null
-              : () async {
-                  //Navigator.pushNamed(context, AddPlateScreen.tag);
-                  //SnackUtil.showSnackBar(context, "New Dish added");
-                  //await Future.delayed(Duration(seconds: 2));
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  await dishDB
-                      .addNewDish(
-                          name: _name.trim(),
-                          restoID: loggedInUser.uid,
-                          description: _desc.trim(),
-                          image: _image,
-                          cuisine: _cuisine,
-                          price: _price.trim(),
-                          category: _category)
-                      .catchError((e) {
-                    ErrorFlush.showErrorFlush(
-                        context: context, message: e.toString());
-                  }).whenComplete(() {
-                    // return showDialog(
-                    //   context: context,
-                    //   builder: (BuildContext context) {
-                    //     return AlertDialog(
-                    //       title: Text("Success"),
-                    //       content: Text("New Dish Added"),
-                    //       actions: [
-                    //         FlatButton(
-                    //           child: Text("Ok"),
-                    //           onPressed: () {
-                    //             Navigator.pop(context);
-                    //             Navigator.pop(context);
-                    //           },
-                    //         )
-                    //       ],
-                    //     );
-                    //   },
-                    // );
-                    SuccessFlush.showSuccessFlush(
-                        context: context, message: "New Dish Added");
-                  });
-                  // setState(() {
-                  //   _isLoading = false;
-                  // });
-                  //Navigator.pop(context);
-                },
+          onPressed: _isconfirmed
+              ? _isLoading
+                  ? null
+                  : () async {
+                      //Navigator.pushNamed(context, AddPlateScreen.tag);
+                      //SnackUtil.showSnackBar(context, "New Dish added");
+                      //await Future.delayed(Duration(seconds: 2));
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      await dishDB
+                          .addNewDish(
+                              name: _name.trim(),
+                              restoID: loggedInUser.uid,
+                              description: _desc.trim(),
+                              image: _image,
+                              cuisine: _cuisine,
+                              price: _price.trim(),
+                              category: _category)
+                          .catchError((e) {
+                        ErrorFlush.showErrorFlush(
+                            context: context, message: e.toString());
+                      }).whenComplete(() {
+                        // return showDialog(
+                        //   context: context,
+                        //   builder: (BuildContext context) {
+                        //     return AlertDialog(
+                        //       title: Text("Success"),
+                        //       content: Text("New Dish Added"),
+                        //       actions: [
+                        //         FlatButton(
+                        //           child: Text("Ok"),
+                        //           onPressed: () {
+                        //             Navigator.pop(context);
+                        //             Navigator.pop(context);
+                        //           },
+                        //         )
+                        //       ],
+                        //     );
+                        //   },
+                        // );
+                        SuccessFlush.showSuccessFlush(
+                            context: context, message: "New Dish Added");
+                      });
+                      // setState(() {
+                      //   _isLoading = false;
+                      // });
+                      //Navigator.pop(context);
+                    }
+              : null,
         ));
   }
 

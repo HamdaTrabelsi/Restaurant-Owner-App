@@ -21,11 +21,9 @@ class _EditPlateScreen extends State<EditPlateScreen> {
   File _image;
   String imageUrl;
   final _picker = ImagePicker();
-  String _type;
-  bool fieldName = true;
-  bool fieldSub = true;
-  bool fieldPrice = true;
-  bool fieldDesc = true;
+  String _newCat;
+  String _newCuisine;
+  //String newDesc;
   bool _isconfirmed = true;
 
   TextEditingController _NameController = new TextEditingController();
@@ -55,7 +53,11 @@ class _EditPlateScreen extends State<EditPlateScreen> {
   ];
 
   void checkFields() {
-    if (fieldName && fieldSub && fieldPrice && fieldDesc && _type != null) {
+    if (_NameController.text != "" &&
+        _DescController.text != "" &&
+        _PriceController.text != "" &&
+        _categoryController.text != "" &&
+        _cuisinController.text != "") {
       _isconfirmed = true;
     }
   }
@@ -203,10 +205,12 @@ class _EditPlateScreen extends State<EditPlateScreen> {
                                 );
                               }).toList(),
                               onChanged: (selectedItem) {
-                                setState(() {
-                                  _type = selectedItem;
-                                  checkFields();
-                                });
+                                _categoryController.text = selectedItem;
+
+                                // setState(() {
+                                //   _type = selectedItem;
+                                //   checkFields();
+                                // });
                               }),
                         )),
                     SizedBox(
@@ -235,10 +239,10 @@ class _EditPlateScreen extends State<EditPlateScreen> {
                                 );
                               }).toList(),
                               onChanged: (selectedItem) {
-                                setState(() {
-                                  _cuisinController.text = selectedItem;
-                                  checkFields();
-                                });
+                                _cuisinController.text = selectedItem;
+                                // setState(() {
+                                //   checkFields();
+                                // });
                               }),
                         )),
                     SizedBox(
@@ -266,12 +270,11 @@ class _EditPlateScreen extends State<EditPlateScreen> {
                             borderSide: BorderSide(color: Colors.grey)),
                       ),
                       onChanged: (value) {
-                        if (value != null) {
-                          fieldPrice = true;
-                          setState(() {
-                            checkFields();
-                          });
-                        }
+                        // if (value != null) {
+                        //   setState(() {
+                        //     checkFields();
+                        //   });
+                        // }
                       },
                     ),
                     SizedBox(
@@ -300,12 +303,11 @@ class _EditPlateScreen extends State<EditPlateScreen> {
                             borderSide: BorderSide(color: Colors.grey)),
                       ),
                       onChanged: (value) {
-                        if (value != null) {
-                          fieldDesc = true;
-                          setState(() {
-                            checkFields();
-                          });
-                        }
+                        // if (value != null) {
+                        //   setState(() {
+                        //     checkFields();
+                        //   });
+                        // }
                       },
                     ),
                     SizedBox(

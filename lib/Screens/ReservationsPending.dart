@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/Models/Reservation.dart';
+import 'package:foodz_owner/Models/Restaurant.dart';
 import 'package:foodz_owner/Widgets/ActivityWidget.dart';
 import 'package:foodz_owner/Widgets/ReserveItem.dart';
 import 'package:foodz_owner/Widgets/DismissibleWidget.dart';
@@ -6,6 +10,7 @@ import 'package:foodz_owner/utils/SnackUtil.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:another_flushbar/flushbar_route.dart';
+import 'package:foodz_owner/utils/consts/const.dart';
 
 List reservations = [
   {
@@ -50,38 +55,8 @@ List reservations = [
   },
 ];
 
-List destinations = [
-  {
-    "imageUrl": 'images/offline/cm1.jpeg',
-    "city": 'Venice',
-    "country": 'Italy',
-    "description": 'Visit Venice for an amazing and unforgettable adventure.',
-    //activities: activities,
-  },
-  {
-    "imageUrl": 'images/offline/cm2.jpeg',
-    "city": 'Paris',
-    "country": 'France',
-    "description": 'Visit Paris for an amazing and unforgettable adventure.',
-    //activities: activities,
-  },
-  {
-    "imageUrl": 'images/offline/cm3.jpeg',
-    "city": 'New Delhi',
-    "country": 'India',
-    "description":
-        'Visit New Delhi for an amazing and unforgettable adventure.',
-    //activities: activities,
-  },
-  {
-    "imageUrl": 'images/offline/cm4.jpeg',
-    "city": 'Sao Paulo',
-    "country": 'Brazil',
-    "description":
-        'Visit Sao Paulo for an amazing and unforgettable adventure.',
-    //activities: activities,
-  },
-];
+final _auth = FirebaseAuth.instance;
+User _loggedInUser;
 
 class ReservationsPending extends StatefulWidget {
   static String tag = '/ReservationsPending';
@@ -91,40 +66,132 @@ class ReservationsPending extends StatefulWidget {
 }
 
 class _ReservationsPending extends State<ReservationsPending> {
+  List<Reservation> _pending = [];
+
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        _loggedInUser = user;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    getCurrentUser();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.fromLTRB(10.0, 10, 10.0, 0),
-        child: ListView.builder(
-          //separatorBuilder: (context, index) => Divider(),
-          itemCount: reservations == null ? 0 : reservations.length,
-          itemBuilder: (BuildContext context, int index) {
-//                Food food = Food.fromJson(foods[index]);
-            Map rest = reservations[index];
-//                print(foods);
-//                print(foods.length);
-            return DismissibleWidget(
-              item: rest,
-              ondismissed: (direction) {
-                dismissItem(context, index, direction);
-              },
-              child: ActivityWidget(
-                type: rest["name"],
-                rating: 5,
-                name: rest["name"],
-                price: 4,
-                times: ["9:00 am", rest["date"]],
-                imageUrl: rest["img"],
-              ),
-              // ReserveItem(
-              //   img: rest['img'],
-              //   time: rest['time'],
-              //   name: rest['name'],
-              //   date: rest['date'],
-              //   seats: rest['seats'],
-              // ),
-            );
+        child: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('reservation')
+              .where("restoId", isEqualTo: _loggedInUser.uid)
+              .where("state", isEqualTo: "Pending")
+              .orderBy("sent")
+              .snapshots(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                  child: Container(child: CircularProgressIndicator()));
+            }
+            if (snapshot.data.docs.isNotEmpty) {
+              _pending.clear();
+              snapshot.data.docs.forEach((element) {
+                _pending.add(Reservation.fromJson(element));
+              });
+              return ListView.builder(
+                //padding: EdgeInsets.symmetric(vertical: 10),
+                //shrinkWrap: true,
+                //primary: false,
+                //physics: NeverScrollableScrollPhysics(),
+                itemCount: _pending == null ? 0 : _pending.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Reservation rev = _pending[index];
+                  return DismissibleWidget(
+                    item: rev,
+                    ondismissed: (direction) {
+                      dismissItem(context, index, direction);
+                    },
+                    child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('restaurant')
+                            .doc(rev.restoId)
+                            .snapshots(),
+                        builder: (context,
+                            AsyncSnapshot<DocumentSnapshot> restSnapshot) {
+                          if (restSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                                child: Container(
+                                    child: CircularProgressIndicator()));
+                          }
+                          if (restSnapshot.data.exists) {
+                            Restaurant rest =
+                                Restaurant.fromJson(restSnapshot.data);
+                            return ActivityWidget(
+                              type: rest.title,
+                              rating: 5,
+                              name: rest.title,
+                              people: 4,
+                              times: ["24/02/2021", rev.reservationTime],
+                              imageUrl: rest.image,
+                            );
+                          } else {
+                            return Center(
+                                child: Container(
+                                    child: CircularProgressIndicator()));
+                          }
+                        }),
+                  );
+                },
+              );
+            } else {
+              return Align(
+                alignment: Alignment.center,
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 280,
+                  child: Stack(
+                    children: <Widget>[
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 50,
+                          ),
+                          // Image.asset("images/offline/serving-dish.png",
+                          //     width: 230, height: 120),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text("You don't have any reservations !",
+                              style: TextStyle(
+                                  fontSize: 30,
+                                  color: Constants.lightAccent,
+                                  fontWeight: FontWeight.bold)),
+                          Container(height: 10),
+                          Text("Make some !",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Constants.lightAccent,
+                              )),
+                          Container(height: 25),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }
           },
         ),
       ),

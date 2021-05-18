@@ -104,8 +104,8 @@ class _IntroScreenState extends State<IntroScreen> {
                 validator: (value) {
                   if (value.trim().isEmpty) {
                     return 'Longitude address is required';
-                  } else if (int.parse(value) > 180 ||
-                      int.parse(value) < -180) {
+                  } else if (double.parse(value) > 180 ||
+                      double.parse(value) < -180) {
                     return 'Longitude should be between -180 and 180';
                   }
                   return null;
@@ -119,7 +119,8 @@ class _IntroScreenState extends State<IntroScreen> {
                 validator: (value) {
                   if (value.trim().isEmpty) {
                     return 'Latitude is required';
-                  } else if (int.parse(value) > 90 || int.parse(value) < -90) {
+                  } else if (double.parse(value) > 90 ||
+                      double.parse(value) < -90) {
                     return 'Latitude should be between -90 and 90';
                   }
                   return null;
@@ -663,10 +664,10 @@ class _IntroScreenState extends State<IntroScreen> {
                 ? AssetImage("images/offline/empty.png")
                 : FileImage(File(_image.path)),*/
             decoration: BoxDecoration(
-                color: Colors.green[100],
+                color: Colors.grey[300],
                 image: DecorationImage(
                   image: _image == null
-                      ? AssetImage("images/offline/empty.png")
+                      ? AssetImage("images/offline/choose-image.png")
                       : FileImage(File(_image.path)),
                 )),
           ),

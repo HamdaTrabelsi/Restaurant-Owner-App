@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Utilisateur {
@@ -27,8 +28,10 @@ class Utilisateur {
     email = json['email'];
     username = json['username'];
     image = json['image'];
-    created = json['created'];
-    birthDate = json['birthDate'];
+    Timestamp timeCreated = json['created'];
+    created = timeCreated.toDate();
+    Timestamp timeBirth = json['birthDate'];
+    birthDate = timeBirth.toDate();
     phone = json['phone'];
     gender = json['gender'];
     address = json['address'];
