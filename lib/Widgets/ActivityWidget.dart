@@ -5,7 +5,7 @@ import 'package:foodz_owner/Widgets/SmoothStarRating.dart';
 
 class ActivityWidget extends StatelessWidget {
   final String imageUrl;
-  final int people;
+  final String people;
   final String name;
   final String type;
   final double rating;
@@ -34,6 +34,7 @@ class ActivityWidget extends StatelessWidget {
           Positioned(
               right: 10.0,
               child: Card(
+                color: Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0)),
                 child: Container(
@@ -69,18 +70,18 @@ class ActivityWidget extends StatelessWidget {
                 SizedBox(
                     width: _containerWidth / 3,
                     child: AutoSizeText("$name",
-                        maxLines: 2,
+                        maxLines: 1,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20.0))),
                 Text("$type",
                     style: TextStyle(color: Colors.grey, fontSize: 12.0)),
-                StarRating(
+                /*StarRating(
                   rating: rating,
                   starCount: 5,
                   size: 10.0,
                   color: Colors.yellow,
-                ),
-                _buildSchedule(times)
+                ),*/
+                _buildSchedule(times, color: Theme.of(context).accentColor)
               ],
             ),
           ),
@@ -101,14 +102,17 @@ class ActivityWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSchedule(List<String> times) {
+  Widget _buildSchedule(List<String> times, {Color color}) {
     List<Padding> slots = new List<Padding>();
     for (String time in times) {
       var slot = Padding(
         padding: EdgeInsets.only(left: 2.0, right: 2.0),
         child: new Chip(
-          label: Text(time),
-          backgroundColor: Colors.blue[100],
+          label: Text(
+            time,
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: color,
         ),
       );
 

@@ -1,55 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/Database/ReservationDB.dart';
 import 'package:foodz_owner/Models/Reservation.dart';
 import 'package:foodz_owner/Models/Utilisateur.dart';
+import 'package:foodz_owner/Widgets/ActivityWidget.dart';
 import 'package:foodz_owner/Widgets/ReserveItem.dart';
 import 'package:foodz_owner/Widgets/DismissibleWidget.dart';
 import 'package:foodz_owner/utils/SnackUtil.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
+import 'package:intl/intl.dart';
 
-List reservations = [
-  {
-    "img": "images/offline/cm1.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Doe",
-    "seats": "4",
-    "time": "14:15",
-    "date": "24 / 08 / 2020"
-  },
-  {
-    "img": "images/offline/cm2.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Doe",
-    "seats": "9",
-    "time": "17:15",
-    "date": "24 / 15 / 2021"
-  },
-  {
-    "img": "images/offline/cm4.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Doe",
-    "seats": "2",
-    "time": "14:15",
-    "date": "14 / 09 / 2020"
-  },
-  {
-    "img": "images/offline/cm3.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Doe",
-    "seats": "4",
-    "time": "14:15",
-    "date": "24 / 08 / 2020"
-  },
-];
+ReservationDB resDB = ReservationDB();
+DateFormat _formatter = DateFormat('yyyy-MM-dd');
 
 final _auth = FirebaseAuth.instance;
 User _loggedInUser;
@@ -90,7 +53,7 @@ class _ReservationsAccepted extends State<ReservationsAccepted> {
             stream: FirebaseFirestore.instance
                 .collection('reservation')
                 .where("restoId", isEqualTo: _loggedInUser.uid)
-                .where("state", isEqualTo: "Pending")
+                .where("state", isEqualTo: "Accepted")
                 .orderBy("sent")
                 .snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -113,8 +76,9 @@ class _ReservationsAccepted extends State<ReservationsAccepted> {
 //                print(foods.length);
                     return DismissibleWidget(
                       item: rest,
+                      //conf : () {}
                       ondismissed: (direction) {
-                        dismissItem(context, index, direction);
+                        dismissAction(direction, rest.uid);
                       },
                       child: StreamBuilder(
                           stream: FirebaseFirestore.instance
@@ -132,12 +96,23 @@ class _ReservationsAccepted extends State<ReservationsAccepted> {
                             if (clientSnapshot.data.exists) {
                               Utilisateur client = Utilisateur.fromJson(
                                   clientSnapshot.data.data());
-                              return ReserveItem(
+                              /*return ReserveItem(
                                 img: client.image,
                                 time: rest.reservationTime,
                                 name: client.username,
                                 date: "24/02/2021",
                                 seats: rest.people,
+                              );*/
+                              return ActivityWidget(
+                                type: client.username,
+                                rating: 5,
+                                name: client.username,
+                                people: rest.people,
+                                times: [
+                                  _formatter.format(rest.reservationDay),
+                                  rest.reservationTime
+                                ],
+                                imageUrl: client.image,
                               );
                             } else {
                               return Center(
@@ -209,11 +184,28 @@ class _ReservationsAccepted extends State<ReservationsAccepted> {
     );
   }
 
-  void dismissItem(
+  /*void dismissItem(
       BuildContext context, int index, DismissDirection direction) {
     setState(() {
       reservations.removeAt(index);
     });
     SnackUtil.showSnackBar(context, 'This reservation has been cancelled');
+  }*/
+}
+
+void dismissAction(DismissDirection direction, String id) {
+  switch (direction) {
+    case DismissDirection.startToEnd:
+      /*Flushbar(
+          flushbarPosition: FlushbarPosition.TOP,
+          //title: "Hey Ninja",
+          message: "This Reservation has been approved",
+          duration: Duration(seconds: 1),
+        )..show(context);*/
+      resDB.editReservationState(state: "Done", id: id);
+      break;
+    case DismissDirection.endToStart:
+      resDB.editReservationState(state: "Canceled", id: id);
+      break;
   }
 }

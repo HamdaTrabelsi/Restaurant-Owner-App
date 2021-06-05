@@ -214,13 +214,8 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                                     ),
                                     maxLines: 2,
                                   ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  InkWell(
-                                    child:
-                                        Icon(Icons.create, color: Colors.green),
-                                    onTap: () {
+                                  FlatButton(
+                                    onPressed: () {
                                       showModalBottomSheet(
                                         isScrollControlled: true,
                                         context: context,
@@ -234,7 +229,11 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                                             uid: myRes.uid)),
                                       );
                                     },
-                                  )
+                                    child: Icon(
+                                      Icons.create,
+                                      color: Colors.green,
+                                    ),
+                                  ),
                                 ],
                               ),
                               Padding(
@@ -742,7 +741,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
     return StatefulBuilder(
         builder: (contex, StateSetter setModalState /*You can rename this!*/) {
       return AnimatedPadding(
-          padding: MediaQuery.of(context).viewInsets,
+          padding: MediaQuery.of(contex).viewInsets,
           duration: const Duration(milliseconds: 100),
           curve: Curves.decelerate,
           child: Container(
@@ -809,7 +808,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
     return StatefulBuilder(
         builder: (contex, StateSetter setModalState /*You can rename this!*/) {
       return AnimatedPadding(
-          padding: MediaQuery.of(context).viewInsets,
+          padding: MediaQuery.of(contex).viewInsets,
           duration: const Duration(milliseconds: 100),
           curve: Curves.decelerate,
           child: Container(

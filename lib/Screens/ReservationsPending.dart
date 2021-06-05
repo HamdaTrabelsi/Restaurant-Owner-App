@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/Database/ReservationDB.dart';
 import 'package:foodz_owner/Models/Reservation.dart';
 import 'package:foodz_owner/Models/Restaurant.dart';
+import 'package:foodz_owner/Models/Utilisateur.dart';
 import 'package:foodz_owner/Widgets/ActivityWidget.dart';
 import 'package:foodz_owner/Widgets/ReserveItem.dart';
 import 'package:foodz_owner/Widgets/DismissibleWidget.dart';
@@ -11,50 +13,12 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:another_flushbar/flushbar_route.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
+import 'package:intl/intl.dart';
+import 'package:sweetsheet/sweetsheet.dart';
 
-List reservations = [
-  {
-    "img": "images/offline/cm1.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Doe",
-    "seats": "4",
-    "time": "14:15",
-    "date": "24 / 08 / 2020"
-  },
-  {
-    "img": "images/offline/cm2.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Doe",
-    "seats": "9",
-    "time": "17:15",
-    "date": "24 / 15 / 2021"
-  },
-  {
-    "img": "images/offline/cm4.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Doe",
-    "seats": "2",
-    "time": "14:15",
-    "date": "14 / 09 / 2020"
-  },
-  {
-    "img": "images/offline/cm3.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Doe",
-    "seats": "4",
-    "time": "14:15",
-    "date": "24 / 08 / 2020"
-  },
-];
-
+final SweetSheet _sweetSheet = SweetSheet();
+final ReservationDB resDB = ReservationDB();
+DateFormat _formatter = DateFormat('yyyy-MM-dd');
 final _auth = FirebaseAuth.instance;
 User _loggedInUser;
 
@@ -118,31 +82,34 @@ class _ReservationsPending extends State<ReservationsPending> {
                   return DismissibleWidget(
                     item: rev,
                     ondismissed: (direction) {
-                      dismissItem(context, index, direction);
+                      dismissAction(direction, rev.uid);
                     },
                     child: StreamBuilder(
                         stream: FirebaseFirestore.instance
-                            .collection('restaurant')
-                            .doc(rev.restoId)
+                            .collection('users')
+                            .doc(rev.clientId)
                             .snapshots(),
                         builder: (context,
-                            AsyncSnapshot<DocumentSnapshot> restSnapshot) {
-                          if (restSnapshot.connectionState ==
+                            AsyncSnapshot<DocumentSnapshot> clientSnapshot) {
+                          if (clientSnapshot.connectionState ==
                               ConnectionState.waiting) {
                             return Center(
                                 child: Container(
                                     child: CircularProgressIndicator()));
                           }
-                          if (restSnapshot.data.exists) {
-                            Restaurant rest =
-                                Restaurant.fromJson(restSnapshot.data);
+                          if (clientSnapshot.data.exists) {
+                            Utilisateur client = Utilisateur.fromJson(
+                                clientSnapshot.data.data());
                             return ActivityWidget(
-                              type: rest.title,
+                              type: client.username,
                               rating: 5,
-                              name: rest.title,
-                              people: 4,
-                              times: ["24/02/2021", rev.reservationTime],
-                              imageUrl: rest.image,
+                              name: client.username,
+                              people: rev.people,
+                              times: [
+                                _formatter.format(rev.reservationDay),
+                                rev.reservationTime
+                              ],
+                              imageUrl: client.image,
                             );
                           } else {
                             return Center(
@@ -215,27 +182,90 @@ class _ReservationsPending extends State<ReservationsPending> {
     );
   }
 
-  void dismissItem(
-      BuildContext context, int index, DismissDirection direction) {
-    setState(() {
-      reservations.removeAt(index);
-    });
+/*
+  bool dismissConf(int index, DismissDirection direction, String id) {
     switch (direction) {
       case DismissDirection.startToEnd:
-        Flushbar(
+        /*Flushbar(
           flushbarPosition: FlushbarPosition.TOP,
           //title: "Hey Ninja",
           message: "This Reservation has been approved",
           duration: Duration(seconds: 1),
-        )..show(context);
+        )..show(context);*/
+        //return swipeGreenAction(context, id);
         break;
       case DismissDirection.endToStart:
-        Flushbar(
+        return swipeRedAction(context, id);
+        break;
+    }
+  }
+}
+
+bool swipeRedAction(BuildContext context, String id) {
+  _sweetSheet.show(
+    context: context,
+    title: Text("Decline ?"),
+    description: Text('Are you sure you want to decline this reservation ?'),
+    color: SweetSheetColor.DANGER,
+    icon: Icons.delete,
+    positive: SweetSheetAction( 
+      onPressed: () async {
+        //await resDB.declineReservation(id: id);
+        print(true);
+        return true;
+        //Navigator.pop(context);
+      },
+      title: 'Confirm',
+      //icon: Icons.open_in_new,
+    ),
+    negative: SweetSheetAction(
+      onPressed: () {
+        //Navigator.of(context).pop();
+        return false;
+      },
+      title: 'Cancel',
+    ),
+  );
+}
+
+bool swipeGreenAction(BuildContext context, String id) {
+  _sweetSheet.show(
+    context: context,
+    title: Text("Accept"),
+    description: Text('Do you want to accept this reservation'),
+    color: SweetSheetColor.SUCCESS,
+    icon: Icons.check,
+    positive: SweetSheetAction(
+      onPressed: () async {
+        //await resDB.acceptReservation(id: id);
+        return true;
+      },
+      title: 'Confirm',
+      //icon: Icons.open_in_new,
+    ),
+    negative: SweetSheetAction(
+      onPressed: () {
+        return false;
+        //Navigator.of(context).pop();
+      },
+      title: 'Cancel',
+    ),
+  );
+}
+*/
+  void dismissAction(DismissDirection direction, String id) {
+    switch (direction) {
+      case DismissDirection.startToEnd:
+        /*Flushbar(
           flushbarPosition: FlushbarPosition.TOP,
           //title: "Hey Ninja",
-          message: "This Reservation has been deleted",
+          message: "This Reservation has been approved",
           duration: Duration(seconds: 1),
-        )..show(context);
+        )..show(context);*/
+        resDB.editReservationState(state: "Accepted", id: id);
+        break;
+      case DismissDirection.endToStart:
+        resDB.editReservationState(state: "Declined", id: id);
         break;
     }
   }
