@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart' as latLng;
+import 'package:nominatim_location_picker/nominatim_location_picker.dart';
 
 class TestScreen extends StatefulWidget {
   static String tag = '/testScreen';
@@ -10,56 +10,63 @@ class TestScreen extends StatefulWidget {
 }
 
 class _TestScreen extends State<TestScreen> {
-  //List<LatLng> latlngList = List<LatLng>();
+  Map _pickedLocation;
+  var _pickedLocationText;
+
+  Future getLocationWithNominatim() async {
+    Map result = await showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return NominatimLocationPicker(
+            searchHint: 'Pesquisar',
+            awaitingForLocation: "Procurando por sua localização",
+          );
+        });
+    if (result != null) {
+      setState(() => _pickedLocation = result);
+    } else {
+      return;
+    }
+  }
+
+  RaisedButton nominatimButton(Color color, String name) {
+    return RaisedButton(
+      color: color,
+      onPressed: () async {
+        await getLocationWithNominatim();
+      },
+      textColor: Colors.white,
+      child: Center(
+        child: Text(name),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+    );
+  }
+
+  Widget appBar() {
+    return AppBar(
+      centerTitle: true,
+      title: Text('How to use'),
+    );
+  }
+
+  Widget body(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: _pickedLocation != null
+              ? Center(child: Text("$_pickedLocation"))
+              : nominatimButton(Colors.blue, 'Nominatim Location Picker'),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Map"),
-      ),
-      body: Center(
-        child: FlutterMap(
-          options: MapOptions(
-            center: latLng.LatLng(31.050478, -7.931633),
-            zoom: 12.0,
-          ),
-          layers: [
-            TileLayerOptions(
-              urlTemplate: "mapbox://styles/novanova/ckocjl7kd05vq17odjfwcufk3",
-              additionalOptions: {
-                'accessToken':
-                    'pk.eyJ1Ijoibm92YW5vdmEiLCJhIjoiY2tjeGh3N2ZwMDA3ZDJ3bXJwYmJ6eXQyZCJ9.ru-z3kSHckZ0JBrtbip-Rg',
-                'id': 'mapbox.streets',
-              },
-            ),
-            MarkerLayerOptions(
-              markers: [
-                Marker(
-                  width: 50.0,
-                  height: 50.0,
-                  point: latLng.LatLng(31.050478, -7.931633),
-                  builder: (ctx) => Container(
-                    child: Image.asset(
-                      "images/offline/success.png",
-                    ),
-                  ),
-                )
-              ],
-            ),
-            // PolylineLayerOptions(polylines: [
-            //   Polyline(
-            //     points: latlngList,
-            //     // isDotted: true,
-            //     color: Color(0xFF669DF6),
-            //     strokeWidth: 3.0,
-            //     borderColor: Color(0xFF1967D2),
-            //     borderStrokeWidth: 0.1,
-            //   )
-            // ])
-          ],
-        ),
-      ),
-    );
+        backgroundColor: Colors.grey, appBar: appBar(), body: body(context));
   }
 }

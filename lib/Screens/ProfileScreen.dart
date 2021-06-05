@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:foodz_owner/Database/UserDB.dart';
 import 'package:foodz_owner/Provider/app_provider.dart';
+import 'package:foodz_owner/Screens/TestMap.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
@@ -563,6 +564,27 @@ class _ProfileScreen extends State<ProfileScreen> {
                               title: 'Cancel',
                             ),
                           );
+                        },
+                        tooltip: "Logout",
+                      ),
+                    ),
+
+                    ListTile(
+                      title: Text(
+                        "Map",
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.red),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(
+                          Icons.map,
+                          size: 20.0,
+                          color: Colors.red,
+                        ),
+                        onPressed: () async {
+                          Navigator.pushNamed(context, TestScreen.tag);
                         },
                         tooltip: "Logout",
                       ),
