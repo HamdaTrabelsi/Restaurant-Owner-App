@@ -68,7 +68,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> userDocumentt;
+    //Map<String, dynamic> userDocumentt;
 
     return StreamBuilder(
         stream: /*restDB.getRestaurant(id: loggedInUser.uid)*/ FirebaseFirestore

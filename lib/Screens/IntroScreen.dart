@@ -25,7 +25,7 @@ class _IntroScreenState extends State<IntroScreen> {
     "Japanese",
     "Egyptian",
     "Fast Food",
-    "Indian"
+    "Mexican"
   ];
 
   File _image;

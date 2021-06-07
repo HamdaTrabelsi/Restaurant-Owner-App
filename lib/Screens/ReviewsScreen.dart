@@ -1,40 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodz_owner/Models/Review.dart';
+import 'package:foodz_owner/Models/Utilisateur.dart';
 import 'package:foodz_owner/Widgets/SmoothStarRating.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
 import 'package:foodz_owner/Widgets/TapOpacity.dart';
+import 'package:intl/intl.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:foodz_owner/utils/consts/common.dart';
 
-List comments = [
-  {
-    "img": "images/offline/cm1.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Doe"
-  },
-  {
-    "img": "images/offline/cm2.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Joe"
-  },
-  {
-    "img": "images/offline/cm3.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Mary Jane"
-  },
-  {
-    "img": "images/offline/cm4.jpeg",
-    "comment": "Nulla porttitor accumsan tincidunt. Vestibulum ante "
-        "ipsum primis in faucibus orci luctus et ultrices posuere "
-        "cubilia Curae",
-    "name": "Jane Jones"
-  }
-];
+User _loggedInUser;
+final _auth = FirebaseAuth.instance;
+List<Review> _reviews = [];
 
 class ReviewsScreen extends StatefulWidget {
   static String tag = '/ReviewsScreen';
@@ -44,6 +22,23 @@ class ReviewsScreen extends StatefulWidget {
 }
 
 class _ReviewsScreen extends State<ReviewsScreen> {
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        _loggedInUser = user;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    getCurrentUser();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -106,51 +101,72 @@ class _ReviewsScreen extends State<ReviewsScreen> {
               ),
             ),
             SizedBox(height: 10.0),
-            ListView.builder(
-              shrinkWrap: true,
-              primary: false,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: comments == null ? 0 : comments.length,
-              itemBuilder: (BuildContext context, int index) {
-                Map comment = comments[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    radius: 25.0,
-                    backgroundImage: AssetImage(
-                      "${comment['img']}",
-                    ),
-                  ),
-                  title: Text("${comment['name']}"),
-                  subtitle: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          StarRating(
-                            starCount: 5,
-                            color: Constants.ratingBG,
-                            allowHalfRating: true,
-                            rating: 5.0,
-                            size: 12.0,
-                          ),
-                          SizedBox(width: 6.0),
-                          Text(
-                            "February 14, 2020",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ],
+            FutureBuilder(
+                future: FirebaseFirestore.instance
+                    .collection('review')
+                    .where("restoId", isEqualTo: _loggedInUser.uid)
+                    .get(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: Container(child: CircularProgressIndicator()));
+                  }
+                  if (snapshot.data.docs.isNotEmpty) {
+                    _reviews.clear();
+                    snapshot.data.docs.forEach((element) {
+                      _reviews.add(Review.fromJson(element));
+                    });
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      primary: false,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: _reviews == null ? 0 : _reviews.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Review rev = _reviews[index];
+                        return ReviewCard(rev: rev);
+                      },
+                    );
+                  } else {
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 280,
+                        child: Stack(
+                          children: <Widget>[
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 50,
+                                ),
+                                // Image.asset("images/offline/serving-dish.png",
+                                //     width: 230, height: 120),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text("No reviews !",
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        color: Constants.lightAccent,
+                                        fontWeight: FontWeight.bold)),
+                                Container(height: 10),
+                                Text("You don't have any reviews yet !",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Constants.lightAccent,
+                                    )),
+                                Container(height: 25),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                      SizedBox(height: 7.0),
-                      Text(
-                        "${comment["comment"]}",
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    );
+                  }
+                }),
+
             SizedBox(height: 10.0),
             // Container(
             //   height: 88,
@@ -225,5 +241,69 @@ class _ReviewsScreen extends State<ReviewsScreen> {
         ),
       ),*/
     );
+  }
+}
+
+class ReviewCard extends StatelessWidget {
+  const ReviewCard({
+    Key key,
+    @required this.rev,
+  }) : super(key: key);
+
+  final Review rev;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: FirebaseFirestore.instance
+            .collection('users')
+            .doc(rev.userId)
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Container(child: CircularProgressIndicator()));
+          } else {
+            Utilisateur _user = Utilisateur.fromJson(snapshot.data.data());
+            return ListTile(
+              leading: CircleAvatar(
+                radius: 25.0,
+                backgroundImage: NetworkImage(
+                  _user.image,
+                ),
+              ),
+              title: Text(_user.username),
+              subtitle: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      StarRating(
+                        starCount: 5,
+                        color: Constants.ratingBG,
+                        allowHalfRating: true,
+                        rating: 5.0,
+                        size: 12.0,
+                      ),
+                      SizedBox(width: 6.0),
+                      Text(
+                        DateFormat.yMMMd().add_jm().format(rev.posted.toDate()),
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 7.0),
+                  Text(
+                    rev.description,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  )
+                ],
+              ),
+            );
+          }
+        });
   }
 }
