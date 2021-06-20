@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:foodz_owner/Provider/app_provider.dart';
+import 'package:foodz_owner/Screens/AddAdressScreen.dart';
 import 'package:foodz_owner/Screens/EditPlateScreen.dart';
 import 'package:foodz_owner/Screens/IntroScreen.dart';
 import 'package:foodz_owner/Screens/LoginScreen.dart';
@@ -12,6 +13,7 @@ import 'package:foodz_owner/Screens/WelcomeScreen.dart';
 import 'package:foodz_owner/Screens/PlateDetailsScreen.dart';
 import 'package:foodz_owner/Screens/AddPlateScreen.dart';
 import 'package:foodz_owner/Screens/TestMap.dart';
+import 'package:foodz_owner/Screens/mapboxScreen.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -63,6 +65,8 @@ class MyApp extends StatelessWidget {
             AddPlateScreen.tag: (context) => AddPlateScreen(),
             EditPlateScreen.tag: (context) => EditPlateScreen(),
             TestScreen.tag: (context) => TestScreen(),
+            AddAddressScreen.tag: (context) => AddAddressScreen(),
+            EditAddressScreen.tag: (context) => EditAddressScreen(),
           },
           // onGenerateRoute: (RouteSettings settings) {
           //   print('build route for ${settings.name}');

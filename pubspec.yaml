@@ -55,7 +55,14 @@ dependencies:
   loader_overlay: ^2.0.1
   geocoding: ^2.0.0
   filter_list: ^0.0.9
+  geolocator: ^7.0.3
+  flutter_map: any
+  #flutter_mapbox_navigation: ^0.0.24 
   #nominatim_location_picker: ^0.1.0+7
+
+  user_location:
+    git:
+      url: https://github.com/HamdaTrabelsi/user_location_plugin.git
 
 
 
@@ -68,9 +75,9 @@ dependencies:
    #   url: https://github.com/Vietdq-dev/flutter_map.git
     #  ref: nullsafety_viet
 
-  nominatim_location_picker:
-    git:
-      url: https://github.com/HamdaTrabelsi/nominatim_location_picker.git
+  #nominatim_location_picker:
+   # git:
+    #  url: https://github.com/HamdaTrabelsi/nominatim_location_picker.git
 
 flutter_native_splash:
   #color: "#FD825D"

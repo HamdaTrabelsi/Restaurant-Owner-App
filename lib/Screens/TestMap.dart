@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:nominatim_location_picker/nominatim_location_picker.dart';
+//import 'package:flutter_map/flutter_map.dart';
+//import 'package:nominatim_location_picker/nominatim_location_picker.dart';
 
 class TestScreen extends StatefulWidget {
   static String tag = '/testScreen';
@@ -13,7 +13,7 @@ class _TestScreen extends State<TestScreen> {
   Map _pickedLocation;
   var _pickedLocationText;
 
-  Future getLocationWithNominatim() async {
+  /*Future getLocationWithNominatim() async {
     Map result = await showDialog(
         context: context,
         builder: (BuildContext ctx) {
@@ -27,13 +27,13 @@ class _TestScreen extends State<TestScreen> {
     } else {
       return;
     }
-  }
+  }*/
 
   RaisedButton nominatimButton(Color color, String name) {
     return RaisedButton(
       color: color,
       onPressed: () async {
-        await getLocationWithNominatim();
+        //await getLocationWithNominatim();
       },
       textColor: Colors.white,
       child: Center(

@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:cool_stepper/cool_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:foodz_owner/Database/RestaurantDB.dart';
+import 'package:foodz_owner/Screens/AddAdressScreen.dart';
 import 'package:foodz_owner/Screens/MainScreen.dart';
 import 'package:foodz_owner/Screens/TestMap.dart';
+import 'package:foodz_owner/Screens/mapboxScreen.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -97,7 +100,7 @@ class _IntroScreenState extends State<IntroScreen> {
                 },
                 controller: _titleCtrl,
               ),
-              _buildTextField(
+              /*_buildTextField(
                 kbtype: TextInputType.number,
                 labelText: 'Longitude',
                 icon: Icon(Icons.location_pin),
@@ -126,6 +129,19 @@ class _IntroScreenState extends State<IntroScreen> {
                   return null;
                 },
                 controller: _latCtrl,
+              ),*/
+              _buildTextField(
+                kbtype: TextInputType.multiline,
+                labelText: 'Description',
+                minLine: 6,
+                icon: Icon(Icons.short_text_rounded),
+                validator: (value) {
+                  if (value.trim().isEmpty) {
+                    return 'Description is required';
+                  }
+                  return null;
+                },
+                controller: _descriptionCtrl,
               ),
             ],
           ),
@@ -255,19 +271,6 @@ class _IntroScreenState extends State<IntroScreen> {
                 // },
                 controller: _websiteCtrl,
               ),
-              _buildTextField(
-                kbtype: TextInputType.multiline,
-                labelText: 'Description',
-                minLine: 6,
-                icon: Icon(Icons.short_text_rounded),
-                validator: (value) {
-                  if (value.trim().isEmpty) {
-                    return 'Description is required';
-                  }
-                  return null;
-                },
-                controller: _descriptionCtrl,
-              ),
             ],
           ),
         ),
@@ -278,7 +281,7 @@ class _IntroScreenState extends State<IntroScreen> {
           return null;
         },
       ),
-      CoolStep(
+      /*CoolStep(
         isHeaderEnabled: false,
         content: Align(
           alignment: Alignment.center,
@@ -319,6 +322,8 @@ class _IntroScreenState extends State<IntroScreen> {
           return null;
         },
       ),
+      */
+
       // CoolStep(
       //   title: 'Select your role',
       //   subtitle: 'Choose a role that better defines you',
@@ -351,8 +356,6 @@ class _IntroScreenState extends State<IntroScreen> {
             context: context,
             image: _image,
             title: _titleCtrl.text,
-            long: double.parse(_longCtrl.text),
-            lat: double.parse(_latCtrl.text),
             type: selectedType,
             cuisines: _selectedCuisines,
             description: _descriptionCtrl.text,
@@ -360,8 +363,10 @@ class _IntroScreenState extends State<IntroScreen> {
             website: _websiteCtrl.text.isNotEmpty ? _websiteCtrl.text : "");
         context.loaderOverlay.hide();
 
+        Position _pos = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.best);
         Navigator.pop(context);
-        Navigator.pushNamed(context, MainScreen.tag);
+        Navigator.pushNamed(context, AddAddressScreen.tag, arguments: _pos);
 
         print('Steps completed!');
       },

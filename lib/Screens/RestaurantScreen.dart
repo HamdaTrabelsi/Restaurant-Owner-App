@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:foodz_owner/Database/RestaurantDB.dart';
 import 'package:foodz_owner/Models/Restaurant.dart';
 import 'package:foodz_owner/Screens/ProfileScreen.dart';
+import 'package:foodz_owner/Screens/mapboxScreen.dart';
 import 'package:foodz_owner/Widgets/SmoothStarRating.dart';
 import 'package:foodz_owner/utils/consts/const.dart';
 import 'package:foodz_owner/utils/welcomeScreen/FoodColors.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
@@ -416,7 +418,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                                   ListTile(
                                     title: Text(
                                       myRes.address == null
-                                          ? ""
+                                          ? "No Adress yet"
                                           : myRes.address,
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500),
@@ -427,8 +429,15 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                                         size: 18.0,
                                         color: /*Colors.green*/ k_appColor,
                                       ),
-                                      onTap: () {
-                                        showModalBottomSheet(
+                                      onTap: () async {
+                                        Position _pos =
+                                            await Geolocator.getCurrentPosition(
+                                                desiredAccuracy:
+                                                    LocationAccuracy.best);
+                                        Navigator.pushNamed(
+                                            context, EditAddressScreen.tag,
+                                            arguments: _pos);
+                                        /*showModalBottomSheet(
                                           isScrollControlled: true,
                                           context: context,
                                           builder: ((builder) =>
@@ -438,7 +447,7 @@ class _RestaurantScreen extends State<RestaurantScreen> {
                                                   latcont: latCont,
                                                   longcont: longCont,
                                                   uid: myRes.uid)),
-                                        );
+                                        );*/
                                       },
                                     ),
                                   )

@@ -10,6 +10,7 @@
    <application
         android:label="foodz_owner"
         android:icon="@mipmap/ic_launcher">
+
         <activity
             android:requestLegacyExternalStorage="true"
             android:name=".MainActivity"

@@ -23,8 +23,6 @@ class RestaurantDB {
       {BuildContext context,
       File image,
       String title,
-      double long,
-      double lat,
       String type,
       List<String> cuisines,
       String description,
@@ -34,21 +32,21 @@ class RestaurantDB {
     myUser = _auth.currentUser;
     DocumentReference documentReferencer = restoCollection.doc(myUser.uid);
 
-    GeoPoint g1 = GeoPoint(lat, long);
+    //GeoPoint g1 = GeoPoint(lat, long);
 
     String imgName = await storeRestImage(upImage: image, context: context);
 
-    List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+    //List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
 
-    print(placemarks);
+    //print(placemarks);
 
-    String adresse = placemarks[0].country +
+    /*String adresse = placemarks[0].country +
         " " +
         placemarks[0].locality +
         " " +
         placemarks[0].subLocality +
         " " +
-        placemarks[0].street;
+        placemarks[0].street;*/
 
     Restaurant resto = new Restaurant(
       uid: myUser.uid,
@@ -58,9 +56,8 @@ class RestaurantDB {
       image: imgName,
       type: type,
       cuisine: cuisines,
-      location: g1,
       website: website,
-      address: adresse,
+      //address: adresse,
     );
     var data = resto.toJson();
     //
