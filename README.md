@@ -1,6 +1,6 @@
 # foodz_owner
 
-this is the owner's application
+Apk : https://drive.google.com/file/d/19uPBxKBNdKS5iO6khsAv7UOpd1fIOmeF/view?usp=sharing
 
 ## Getting Started
 
